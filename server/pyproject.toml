@@ -9,6 +9,7 @@ packages = [{include = "buildyourbot", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = {extras = ["standard"], version = "^0.115.0"}
+uvicorn = "^0.31.1"
 
 
 [build-system]

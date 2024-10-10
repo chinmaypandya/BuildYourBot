@@ -1,11 +1,24 @@
+# Build stage
 FROM ghcr.io/withlogicco/poetry:1.8.3 AS build
 
-WORKDIR /app/server
+RUN which poetry
 
+# Ensure Poetry is in the PATH
+# ENV PATH="/opt/poetry/bin"
+
+# Set current working directory
+WORKDIR /app
+
+# copy the setup files to install dependencies
+COPY pyproject.toml ./
+
+# Install dependencies with poetry
+RUN poetry install
+
+# copy the rest of the files
 COPY . .
 
-# Install dependencies without activating the shell, using poetry's virtualenv
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
-
 EXPOSE 8000
+
+# Run the app using Uvicorn
+CMD ["uvicorn", "src:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -1,1 +1,27 @@
-.venv
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Logs and temp files
+*.log
+*.out
+*.err
+tmp/
+temp/
+
+# Local development files
+.vscode/
+.idea/
+
+# Git and version control
+.git/
+.gitignore
+
+# Test artifacts
+.pytest_cache/
+.tox/
+.cache/
+coverage.xml
+htmlcov/

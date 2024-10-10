@@ -1,10 +1,35 @@
 services:
-  server:
+  api:
     restart: always
     build:
       context: ./server
     ports:
       - "8000:8000"
-    volumes:
-      - ./server:/app/server
-    command: poetry run fastapi dev src --host 0.0.0.0
+    # volumes:
+    #   - ./server:/app/server
+    networks:
+      - api-network
+
+  web:
+    restart: always
+    build:
+      context: ./client
+    ports:
+      - "80:80"
+    # volumes:
+    #   - ./client:/app/client
+    environment:
+      - REACT_APP_SUPABASE_URL
+      - REACT_APP_SUPABASE_API
+    env_file:
+      - ./client/.env
+    
+    networks:
+      - web-network
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
+  web-network:
+    driver: bridge
