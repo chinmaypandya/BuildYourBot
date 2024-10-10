@@ -1,0 +1,10 @@
+services:
+  server:
+    restart: always
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app/server
+    command: poetry run fastapi dev src --host 0.0.0.0
