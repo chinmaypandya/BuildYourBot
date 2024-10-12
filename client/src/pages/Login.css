@@ -1,5 +1,12 @@
-
 body {
+  background-color: #181818;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif; 
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+.main {
     background-color: #181818;
     color: #ffffff;
     font-family: 'Roboto', sans-serif; 
