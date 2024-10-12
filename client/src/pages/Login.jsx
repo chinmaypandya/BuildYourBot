@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Auth } from '@supabase/auth-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import Cookies from 'js-cookie'; // Import js-cookie
+import Cookies from 'js-cookie'; 
 import './Login.css';
 
 const supabase = createClient(
@@ -45,7 +45,7 @@ function Login() {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           theme='dark'
-          providers={["discord"]}
+          providers={["google"]}
         />
       </div>
     </div>
