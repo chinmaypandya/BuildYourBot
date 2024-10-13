@@ -1,47 +1,68 @@
-// inputNode.js
-
 import { useState } from 'react';
 import { Handle, Position } from 'reactflow';
+import './Node.css'; 
 
-export const InputNode = ({ id, data }) => {
-  const [currName, setCurrName] = useState(data?.inputName || id.replace('customInput-', 'input_'));
-  const [inputType, setInputType] = useState(data.inputType || 'Text');
-
-  const handleNameChange = (e) => {
-    setCurrName(e.target.value);
-  };
-
-  const handleTypeChange = (e) => {
-    setInputType(e.target.value);
-  };
+export const Node = ({ id, data }) => {
+  const [persona, setPersona] = useState(data?.persona || '');
+  const [dos, setDos] = useState(data?.dos || '');
+  const [donts, setDonts] = useState(data?.donts || '');
+  const [example, setExample] = useState(data?.example || '');
 
   return (
-    <div style={{width: 200, height: 80, border: '1px solid white'}}>
-      <div>
-        <span>Input</span>
+    <div className="node-container">
+      <div className="node-header">
+        <span>Node</span>
       </div>
-      <div>
+      <div className="node-input">
         <label>
-          Name:
-          <input 
-            type="text" 
-            value={currName} 
-            onChange={handleNameChange} 
+          Persona:
+          <input
+            type="text"
+            value={persona}
+            onChange={(e) => setPersona(e.target.value)}
+            placeholder="Who are you"
           />
         </label>
+      </div>
+      <div className="node-input">
         <label>
-          Type:
-          <select value={inputType} onChange={handleTypeChange}>
-            <option value="Text">Text</option>
-            <option value="File">File</option>
-          </select>
+          Do's:
+          <input
+            type="text"
+            value={dos}
+            onChange={(e) => setDos(e.target.value)}
+            placeholder="Tasks"
+          />
+        </label>
+      </div>
+      <div className="node-input">
+        <label>
+          Don'ts:
+          <input
+            type="text"
+            value={donts}
+            onChange={(e) => setDonts(e.target.value)}
+            placeholder="Warnings"
+          />
+        </label>
+      </div>
+      <div className="node-input">
+        <label>
+          Example:
+          <input
+            type="text"
+            value={example}
+            onChange={(e) => setExample(e.target.value)}
+            placeholder="Example"
+          />
         </label>
       </div>
       <Handle
         type="source"
         position={Position.Right}
-        id={`${id}-value`}
+        id={`${id}-output`}
+        style={{ background: '#555' }}
       />
     </div>
   );
-}
+};

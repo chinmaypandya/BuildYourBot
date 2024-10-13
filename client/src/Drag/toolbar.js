@@ -4,12 +4,14 @@ import { DraggableNode } from './draggableNode';
 
 export const PipelineToolbar = () => {
     return (
-        <div style={{ padding: '10px', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ padding: '10px', display: 'flex', justifyContent: 'space-around' }}>
+            <div style={{ marginTop: '20px', display: 'flex', alignItems: 'start', flexWrap: 'wrap', gap: '10px', marginLeft:100 }}>
+                <DraggableNode type='customInput' label='Node' />
+            </div>
             <div style={{ marginTop: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                <DraggableNode type='customInput' label='Input' />
-                <DraggableNode type='llm' label='LLM' />
-                <DraggableNode type='customOutput' label='Output' />
-                <DraggableNode type='text' label='Text' />
+                <DraggableNode type='customRouter' label='Router' />
+                <DraggableNode type='customReact' label='React' />
+                <DraggableNode type='customSimple' label='Simple' />
             </div>
         </div>
     );
