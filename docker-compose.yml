@@ -28,10 +28,28 @@ services:
       - web-network
       - api-network
       - db-network
+      - chat-network
   db:
     restart: always
     build:
       context: ./db
+    # environment:
+    #   - 
+    #   - 
+    env_file:
+      - ./chat/.env
+    ports:
+      - "3001:8501"
+    volumes:
+      - ./chat:/app
+    networks:
+      - chat-network
+      - api-network
+  
+  chat:
+    restart: always
+    build:
+      context: ./chat
     # environment:
     #   - 
     #   - 
@@ -51,4 +69,6 @@ networks:
   web-network:
     driver: bridge
   db-network:
+    driver: bridge
+  chat-network:
     driver: bridge
