@@ -4,14 +4,18 @@ from collections import defaultdict
 from langgraph.graph import END, StateGraph, START
 
 from src.buildyourbot.agents.simple import get_simple_agent
+from src.buildyourbot.state import State
+from src.buildyourbot.llms import get_google_llm
 
 class Graph:
-    def __init__(self, graph_id: str, state: dict, nodes: list[dict[str, any]], llm):
+    def __init__(self, graph_id: str, nodes: list[dict[str, any]], llm, name:str, description: str):
         self.__id = graph_id
-        self.__state = state
+        self.__state = State
         self.__nodes = nodes
         # self.__edges = edges
         self.__llm = llm
+        self.__name = name
+        self.__description = description
     
     @cache
     def __derive_simple_edges(self):
@@ -70,5 +74,6 @@ class Graph:
         return self.__workflow.compile()
 
 @cache
-def get_graph(graph_id: str, state: dict, nodes: list[dict[str, any]], llm):
-    return Graph(graph_id, state, nodes, llm)
+def get_graph(graph_id: str, nodes: list[dict[str, any]], name, description):
+    llm = get_google_llm()
+    return Graph(graph_id, nodes, llm, name, description)
