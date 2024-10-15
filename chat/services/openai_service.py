@@ -1,9 +1,5 @@
 import openai
 import asyncio
-from utils.config import OPENAI_API_KEY
-
-# Set the OpenAI API key directly for the client
-openai.api_key = OPENAI_API_KEY
 
 # Async function to stream responses from the new ChatCompletion API
 async def query_chatgpt_stream(prompt):
