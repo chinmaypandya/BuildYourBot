@@ -1,18 +1,29 @@
 import openai
-from utils.config import OPENAI_API_KEY  # Ensure this points to your API key config
+import asyncio
+from utils.config import OPENAI_API_KEY
 
+# Set the OpenAI API key directly for the client
 openai.api_key = OPENAI_API_KEY
 
-def query_chatgpt(prompt):
+# Async function to stream responses from the new ChatCompletion API
+async def query_chatgpt_stream(prompt):
     try:
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
+        # Use the new ChatCompletion API with streaming enabled
+        response = await openai.ChatCompletion.acreate(
+            model="gpt-4",  # Use the appropriate model
+            messages=[{"role": "user", "content": prompt}],
             max_tokens=150,
-            n=1,
-            stop=None,
-            temperature=0.7,
+            stream=True,
+            temperature=0.7
         )
-        return response.choices[0].text.strip()
-    except Exception as e:  # General exception handling
-        return f"Error: {str(e)}"
+
+        # Stream response chunks
+        full_response = ""
+        async for chunk in response:
+            if "choices" in chunk:
+                chunk_message = chunk['choices'][0]['delta'].get('content', '')
+                full_response += chunk_message
+                yield chunk_message
+
+    except Exception as e:
+        yield f"Error: {str(e)}"
