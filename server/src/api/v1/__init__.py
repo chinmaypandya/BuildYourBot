@@ -15,15 +15,16 @@ async def check_heath():
 async def create_graph(request: Request, chat_request: ChatRequest):
     graph = get_graph(**(chat_request.model_dump())).get_workflow()
     
-    print(graph.get_graph().draw_mermaid)
-    
-    display(
-        Image(
-            graph.get_graph().draw_mermaid_png(
-                draw_method=MermaidDrawMethod.API,
+    try:
+        display(
+            Image(
+                graph.get_graph().draw_mermaid_png(
+                    draw_method=MermaidDrawMethod.API,
+                )
             )
-        )
-    )
+        )    
+    except Exception as e:
+        print("Cannot Display png")
     
-    return "Created"
+    return graph.get_graph().draw_mermaid
     
