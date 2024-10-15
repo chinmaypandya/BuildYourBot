@@ -1,7 +1,29 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
-router = APIRouter(prefix='/v1')
+from IPython.display import Image, display
+from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeStyles
+
+from ..models.chat import ChatRequest
+from src.buildyourbot.graph import get_graph
+router = APIRouter(prefix='/v1/chat')
 
 @router.get('/health')
 async def check_heath():
     return 'API running properly'
+
+@router.get('/graph/create')
+async def create_graph(request: Request, chat_request: ChatRequest):
+    graph = get_graph(**(chat_request.model_dump())).get_workflow()
+    
+    print(graph.get_graph().draw_mermaid)
+    
+    display(
+        Image(
+            graph.get_graph().draw_mermaid_png(
+                draw_method=MermaidDrawMethod.API,
+            )
+        )
+    )
+    
+    return "Created"
+    
