@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.env
+
+# Virtual Environment
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Log files
+*.log
+
+# Caches
+.cache/
+*.cache
+
+# Streamlit
+.streamlit/
