@@ -6,27 +6,15 @@ from langgraph.graph import END, StateGraph, START
 from src.buildyourbot.agents.simple import get_simple_agent
 
 class Graph:
-    def __init__(self, graph_id, state, nodes, edges, llm):
+    def __init__(self, graph_id: str, state: dict, nodes: list[dict[str, any]], llm):
         self.__id = graph_id
         self.__state = state
         self.__nodes = nodes
-        self.__edges = edges
+        # self.__edges = edges
         self.__llm = llm
     
     @cache
-    def get_workflow(self):
-        self.__workflow = StateGraph(self.__state)
-        
-        for node in self.__nodes:
-            if node["type"] == "router":
-                pass
-            else:
-                agent = get_simple_agent(node, self.__llm)
-            
-            self.__workflow.add_node(agent.get_name(), agent.node)
-    
-    @cache
-    def derive_simple_edges(self):
+    def __derive_simple_edges(self):
         # Step 1: Organize data by id and parent_id
         id_to_name = {item["id"]: item["name"] for item in self.__nodes}
         parent_to_children = defaultdict(list)
@@ -63,3 +51,24 @@ class Graph:
             simple_edges.append((end, END))
 
         return simple_edges
+    
+    @cache
+    def get_workflow(self):
+        self.__workflow = StateGraph(self.__state)
+        
+        for node in self.__nodes:
+            if node["type"] == "router":
+                pass
+            else:
+                agent = get_simple_agent(node, self.__llm)
+            
+            self.__workflow.add_node(agent.get_name(), agent.node)
+        
+        for edge in self.__derive_simple_edges():
+            self.__workflow.add_edge(*edge)
+        
+        return self.__workflow.compile()
+
+@cache
+def get_graph(graph_id: str, state: dict, nodes: list[dict[str, any]], llm):
+    return Graph(graph_id, state, nodes, llm)
