@@ -1,54 +1,102 @@
-// store.js
-
 import { create } from "zustand";
 import {
     addEdge,
     applyNodeChanges,
     applyEdgeChanges,
     MarkerType,
-  } from 'reactflow';
+} from 'reactflow';
 
+// Zustand store for managing nodes and edges
 export const useStore = create((set, get) => ({
-    nodes: [],
-    edges: [],
+    // Initial state from sessionStorage or empty arrays
+    nodes: JSON.parse(sessionStorage.getItem('nodes')) || [],
+    edges: JSON.parse(sessionStorage.getItem('edges')) || [],
+    nodeIDs: {},
+
+    // Generates a unique ID for a new node based on its type
     getNodeID: (type) => {
-        const newIDs = {...get().nodeIDs};
-        if (newIDs[type] === undefined) {
-            newIDs[type] = 0;
-        }
-        newIDs[type] += 1;
-        set({nodeIDs: newIDs});
+        const newIDs = { ...get().nodeIDs };
+        newIDs[type] = (newIDs[type] || 0) + 1;
+        set({ nodeIDs: newIDs });
         return `${type}-${newIDs[type]}`;
     },
+
+    // Adds a new node and updates sessionStorage
     addNode: (node) => {
-        set({
-            nodes: [...get().nodes, node]
+        set((state) => {
+            const updatedNodes = [...state.nodes, node];
+            sessionStorage.setItem('nodes', JSON.stringify(updatedNodes));
+            return { nodes: updatedNodes };
         });
     },
+
+    // Handles changes to nodes (e.g., position updates)
     onNodesChange: (changes) => {
-      set({
-        nodes: applyNodeChanges(changes, get().nodes),
-      });
+        set((state) => {
+            const updatedNodes = applyNodeChanges(changes, state.nodes);
+            sessionStorage.setItem('nodes', JSON.stringify(updatedNodes));
+            return { nodes: updatedNodes };
+        });
     },
+
+    // Handles changes to edges (e.g., connection updates)
     onEdgesChange: (changes) => {
-      set({
-        edges: applyEdgeChanges(changes, get().edges),
-      });
+        if (!Array.isArray(changes)) {
+            console.error('Expected changes to be an array', changes);
+            return; // Exit early if changes is not an array
+        }
+        set((state) => {
+            const updatedEdges = applyEdgeChanges(changes, state.edges);
+            sessionStorage.setItem('edges', JSON.stringify(updatedEdges));
+            return { edges: updatedEdges };
+        });
     },
+
+    // Connects nodes and adds a new edge
     onConnect: (connection) => {
-      set({
-        edges: addEdge({...connection, type: 'smoothstep', animated: true, markerEnd: {type: MarkerType.Arrow, height: '20px', width: '20px'}}, get().edges),
-      });
+        set((state) => {
+            const updatedEdges = addEdge({
+                ...connection,
+                type: 'smoothstep',
+                animated: true,
+                markerEnd: { type: MarkerType.Arrow, height: '20px', width: '20px' }
+            }, state.edges);
+            sessionStorage.setItem('edges', JSON.stringify(updatedEdges));
+            return { edges: updatedEdges };
+        });
     },
+
+    // Updates a specific field of a node
     updateNodeField: (nodeId, fieldName, fieldValue) => {
-      set({
-        nodes: get().nodes.map((node) => {
-          if (node.id === nodeId) {
-            node.data = { ...node.data, [fieldName]: fieldValue };
-          }
-  
-          return node;
-        }),
-      });
+        set((state) => {
+            const updatedNodes = state.nodes.map((node) => 
+                node.id === nodeId ? { ...node, data: { ...node.data, [fieldName]: fieldValue }} : node
+            );
+            sessionStorage.setItem('nodes', JSON.stringify(updatedNodes));
+            return { nodes: updatedNodes };
+        });
     },
-  }));
+
+    // Updates multiple fields of a node
+    updateNodeFields: (nodeId, fields) => {
+        set((state) => {
+            const updatedNodes = state.nodes.map((node) => 
+                node.id === nodeId ? { ...node, data: { ...node.data, ...fields }} : node
+            );
+            sessionStorage.setItem('nodes', JSON.stringify(updatedNodes));
+            return { nodes: updatedNodes };
+        });
+    },
+
+    // Sets nodes and updates sessionStorage
+    setNodes: (nodes) => {
+        set({ nodes });
+        sessionStorage.setItem('nodes', JSON.stringify(nodes));
+    },
+
+    // Sets edges and updates sessionStorage
+    setEdges: (edges) => {
+        set({ edges });
+        sessionStorage.setItem('edges', JSON.stringify(edges));
+    },
+}));

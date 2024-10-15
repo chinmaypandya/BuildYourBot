@@ -1,49 +1,51 @@
 import React, { useState } from "react";
-import "./Sidebar.css";
+import "./Sidebar.css"; // Import CSS for styling
 import { PiGraph } from "react-icons/pi";
 import { BsNodePlus } from "react-icons/bs";
-import { MdOutlineSettings } from "react-icons/md";
-import { MdLogout } from "react-icons/md";
+import { MdOutlineSettings, MdLogout } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoHomeOutline } from "react-icons/io5";
-import { createClient } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_API
-);
+import axios from "axios"; // Import axios for API calls
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false);
-  const [isGraphOpen, setIsGraphOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // State to track hover status
+  const [isGraphOpen, setIsGraphOpen] = useState(false); // State to manage graph options visibility
 
-  async function signOutUser(event) {
+  // Function to sign out the user
+  const signOutUser = async (event) => {
     event.preventDefault();
-    const { error } = await supabase.auth.signOut();
-    Cookies.remove('access_token'); 
 
-    if (error) {
-      console.error("Error signing out:", error.message);
-    } else {
-      navigate("/");
+    try {
+      // Make API call to logout
+      const response = await axios.post(`${process.env.REACT_APP_DB_URI}/api/auth/logout`, {}, { withCredentials: true });
+
+      // If logout is successful
+      if (response.status === 200) {
+        Cookies.remove('access_token'); // Remove the access token cookie
+        navigate("/"); // Redirect to home or login page
+      }
+    } catch (error) {
+      console.error("Error signing out:", error.response?.data?.error || error.message); // Log error
     }
-  }
+  };
 
+  // Toggle visibility of graph options
   const toggleGraphOptions = () => {
     setIsGraphOpen(!isGraphOpen);
   };
 
   return (
     <div
-      className={`sidebar ${isHovered ? "hovered" : ""}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`sidebar ${isHovered ? "hovered" : ""}`} // Apply hovered class conditionally
+      onMouseEnter={() => setIsHovered(true)} // Handle mouse enter
+      onMouseLeave={() => setIsHovered(false)} // Handle mouse leave
     >
       <div className="top-section">
-        <div className="sidebar-item">
+        {/* Sidebar items */}
+        <div className="sidebar-item" onClick={() => navigate("/")}>
           <IoHomeOutline />
           {isHovered && <span>Home</span>}
         </div>
@@ -51,7 +53,7 @@ const Sidebar = () => {
           <PiGraph />
           {isHovered && <span>Graph</span>}
         </div>
-        {isGraphOpen && (
+        {isGraphOpen && ( // Render graph options if open
           <div className="graph-options">
             <div className="sidebar-item">
               {isHovered && <span>• Graph Option 1</span>}
@@ -59,7 +61,6 @@ const Sidebar = () => {
             <div className="sidebar-item">
               {isHovered && <span>• Graph Option 2</span>}
             </div>
-            {/* Add more options as needed */}
           </div>
         )}
         <div className="sidebar-item">
@@ -85,7 +86,7 @@ const Sidebar = () => {
         <div className="sidebar-item">
           <a href="#" onClick={signOutUser}>
             <MdLogout />
-            {isHovered && <span>Logout</span>}
+            {isHovered && <span className="logout">Logout</span>}
           </a>
         </div>
       </div>

@@ -19,20 +19,9 @@ export const RouterNode = ({ id, data }) => {
         type="source"
         position={Position.Right}
         id={`${id}-output-1`}
-        style={{ top: '25%' }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-output-2`}
         style={{ top: '50%' }}
       />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-output-3`}
-        style={{ top: '75%' }}
-      />
+      
     </div>
   );
 };
