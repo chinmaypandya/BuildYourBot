@@ -8,7 +8,9 @@ from src.buildyourbot.models import SimpleNode
 from src.buildyourbot.state import State
 
 class SimpleAgent:
-    def __init__(self, node: SimpleNode, llm):
+    def __init__(self, node: dict, llm):
+        node = SimpleAgent(**node).model_dump()
+        
         self.__id = node['id']
         self.__parent_id = node['parent_id']
         self.__name = node['name']

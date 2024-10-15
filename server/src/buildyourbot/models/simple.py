@@ -2,9 +2,9 @@ from pydantic import BaseModel
 
 class SimpleNode(BaseModel):
     id: str
-    parent_id: str | None
+    parent_id: str | None = None
     name: str
     persona: str
     dos: str
-    donts: str | None
-    examples: str | None
+    donts: str | None = None
+    examples: str | None = None
