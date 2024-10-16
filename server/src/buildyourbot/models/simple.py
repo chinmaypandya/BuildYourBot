@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class SimpleNode(BaseModel):
+class SimpleAgentModel(BaseModel):
     id: str
     parent_id: str | None = None
     name: str

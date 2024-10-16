@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request
+from fastapi.responses import FileResponse
 
 from IPython.display import Image, display
 from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeStyles
@@ -17,7 +18,7 @@ async def create_graph(request: Request, graph_data: ChatRequest):
         graph_id=graph_data.graph_id,
         nodes=graph_data.nodes,
         name=graph_data.name,
-        description=graph_data.get("description")
+        description=graph_data.description
     ).get_workflow()
     
     try:
@@ -31,5 +32,13 @@ async def create_graph(request: Request, graph_data: ChatRequest):
     except Exception as e:
         print("Cannot Display png")
     
-    return graph.get_graph().draw_mermaid
+    # Generate the image as bytes
+    image_bytes = graph.get_graph().draw_mermaid_png(draw_method=MermaidDrawMethod.API)
+
+    # Save the image to a file
+    image_path = "./graph_image.png"
+    with open(image_path, "wb") as f:
+        f.write(image_bytes)
+    
+    return FileResponse(image_path, media_type="image/png", filename="graph_image.png")
     

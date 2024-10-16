@@ -8,7 +8,7 @@ from src.buildyourbot.state import State
 from src.buildyourbot.llms import get_google_llm
 
 class Graph:
-    def __init__(self, graph_id: str, nodes: list[dict[str, any]], llm, name:str, description: str):
+    def __init__(self, graph_id: str, nodes: tuple, llm, name:str, description: str):
         self.__id = graph_id
         self.__state = State
         self.__nodes = nodes
@@ -17,7 +17,7 @@ class Graph:
         self.__name = name
         self.__description = description
     
-    @cache
+    # @cache
     def __derive_simple_edges(self):
         # Step 1: Organize data by id and parent_id
         id_to_name = {item["id"]: item["name"] for item in self.__nodes}
@@ -27,13 +27,14 @@ class Graph:
         all_ids = set()
         
         for item in self.__nodes:
+            print(item)
             all_ids.add(item["id"])
-            parent_id = item["parent_id"]
+            parent_id = item.get("parent_id", None)
             if parent_id is not None:
                 parent_to_children[parent_id].append(item["id"])
 
         # Nodes without parent ids are START nodes
-        start_nodes = [id_to_name[item["id"]] for item in self.__nodes if item["parent_id"] is None]
+        start_nodes = [id_to_name[item["id"]] for item in self.__nodes if item.get("parent_id", None) is None]
         
         # Nodes without children are END nodes
         end_nodes = [id_to_name[node_id] for node_id in all_ids if node_id not in parent_to_children]
@@ -61,10 +62,10 @@ class Graph:
         self.__workflow = StateGraph(self.__state)
         
         for node in self.__nodes:
-            if node["type"] == "router":
-                pass
-            else:
-                agent = get_simple_agent(node, self.__llm)
+            # if node["type"] == "router":
+            #     pass
+            # else:
+            agent = get_simple_agent(node, self.__llm)
             
             self.__workflow.add_node(agent.get_name(), agent.node)
         
@@ -73,7 +74,7 @@ class Graph:
         
         return self.__workflow.compile()
 
-@cache
+# @cache
 def get_graph(graph_id: str, nodes: list[dict[str, any]], name, description):
     llm = get_google_llm()
     return Graph(graph_id, nodes, llm, name, description)
