@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, BaseMessage
 from langchain_core.runnables import RunnableConfig
 
-from src.buildyourbot.models import SimpleNode
+from src.buildyourbot.models.simple import SimpleNode
 from src.buildyourbot.state import State
 
 class SimpleAgent:

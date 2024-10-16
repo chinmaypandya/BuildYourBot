@@ -11,9 +11,14 @@ router = APIRouter(prefix='/v1/chat')
 async def check_heath():
     return 'API running properly'
 
-@router.get('/graph/create')
-async def create_graph(request: Request, chat_request: ChatRequest):
-    graph = get_graph(**(chat_request.model_dump())).get_workflow()
+@router.post('/graph/create')
+async def create_graph(request: Request, graph_data: ChatRequest):
+    graph = get_graph(
+        graph_id=graph_data.graph_id,
+        nodes=graph_data.nodes,
+        name=graph_data.name,
+        description=graph_data.get("description")
+    ).get_workflow()
     
     try:
         display(

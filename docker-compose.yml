@@ -4,7 +4,7 @@ services:
     build:
       context: ./server
     ports:
-      - "8000:8000"
+      - "3004:8000"
     # volumes:
     #   - ./server:/app
     networks:
@@ -20,7 +20,7 @@ services:
     env_file:
       - ./client/.env
     ports:
-      - "80:80"
+      - "3000:80"
     # volumes:
     #   - ./client:/app
     
@@ -40,8 +40,8 @@ services:
       - ./chat/.env
     ports:
       - "3001:8501"
-    volumes:
-      - ./chat:/app
+    # volumes:
+    #   - ./chat:/app
     networks:
       - chat-network
       - api-network
@@ -56,7 +56,7 @@ services:
     env_file:
       - ./db/.env
     ports:
-      - "5000:80"
+      - "3002:80"
     # volumes:
     #   - ./db:/app
     networks:

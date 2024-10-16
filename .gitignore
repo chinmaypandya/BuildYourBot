@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Node modules (for Node.js/React projects)
+node_modules/
+
+.gitignore
+.dockerignore
+.DS_Store
+# Dependency directories (for Python)
+_pycache_/
+*.py[cod]
+*.egg-info/
+
+# Environment variables file (important for security)
+.env
+
+# Compiled output
+dist/
+build/
+
+# Cache files
+.cache/
+.tmp/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store (for macOS)
+Thumbs.db (for Windows)
+
+# Git configuration files
+.git/
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
