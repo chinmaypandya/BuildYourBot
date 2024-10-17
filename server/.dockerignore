@@ -1,0 +1,24 @@
+# Node modules
+node_modules/
+tests/
+
+# Logs
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Local development files
+.vscode/
+.idea/
+.venv
+# poetry.lock
+
+# Git and version control
+.git/
+.gitignore
+
+# Build and test artifacts
+build/
+dist/
+coverage/
