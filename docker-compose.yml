@@ -53,8 +53,8 @@ services:
     # environment:
     #   - 
     #   - 
-    env_file:
-      - ./chat/.env
+    # env_file:
+    #   - ./chat/.env
     ports:
       - "3001:8501"
     # volumes:
