@@ -5,9 +5,6 @@ __pycache__/
 # Ignore virtual environment
 venv/
 
-# Ignore environment variables
-.env
-
 # Ignore IDE configurations
 .vscode/
 .idea/
