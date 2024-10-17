@@ -4,6 +4,7 @@ import './Node.css';
 import { useStore } from '../store';
 
 export const Node = ({ id, data }) => {
+  const [name, setName] = useState(data?.name || '');
   const [persona, setPersona] = useState(data?.persona || '');
   const [dos, setDos] = useState(data?.dos || '');
   const [donts, setDonts] = useState(data?.donts || '');
@@ -16,6 +17,7 @@ export const Node = ({ id, data }) => {
   const handleSave = () => {
     // Update node fields only when saving
     updateNodeFields(id, {
+      name,
       persona,
       dos,
       donts,
@@ -24,6 +26,7 @@ export const Node = ({ id, data }) => {
 
     setShowFields(true); // Show the fields when save is clicked
     console.log("Saved Node Fields:", {
+      name,
       persona,
       dos,
       donts,
@@ -32,10 +35,26 @@ export const Node = ({ id, data }) => {
   };
 
   return (
+    
     <div className="node-container">
+      <Handle
+        type="target"
+        position={Position.Left}
+        id={`${id}-input`}
+        style={{ background: '#555' }}
+      />
       <div className="node-header">
-        <span>Node</span>
+        Node: 
+        <div className='header-input'>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Name of the Node"
+            />
+        </div>
       </div>
+    
       <div className="node-input">
         <label>
           Persona:

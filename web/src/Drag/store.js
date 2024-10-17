@@ -59,7 +59,8 @@ export const useStore = create((set, get) => ({
                 ...connection,
                 type: 'smoothstep',
                 animated: true,
-                markerEnd: { type: MarkerType.Arrow, height: '20px', width: '20px' }
+                markerEnd: { type: MarkerType.Arrow, height: "20px", width: "20px", color:"#000"},
+          style: { stroke: '#000', strokeWidth: 2 }, 
             }, state.edges);
             sessionStorage.setItem('edges', JSON.stringify(updatedEdges));
             return { edges: updatedEdges };

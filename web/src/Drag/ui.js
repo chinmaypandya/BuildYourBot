@@ -108,7 +108,7 @@ export const PipelineUI = () => {
     sessionStorage.setItem('nodes', JSON.stringify(nodes));
     sessionStorage.setItem('edges', JSON.stringify(edges));
   }, [nodes, edges]);
-
+ 
   return (
     <div ref={reactFlowWrapper} style={{ width: '95vw', height: '80vh', marginLeft: '70px' }}>
       <ReactFlow
@@ -122,10 +122,11 @@ export const PipelineUI = () => {
         onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
         proOptions={proOptions}
-        snapGrid={[gridSize, gridSize]} // Enable snapping to grid
-        connectionLineType='smoothstep' // Type of connection line
+        snapGrid={[gridSize, gridSize]} 
+        connectionLineType='smoothstep' 
+        connectionLineStyle={{ stroke: '#000', strokeWidth: 2 }}
       >
-        <Background color="#fff" gap={gridSize} />
+        <Background gap={gridSize} style={{stroke: '#9a9999', strokeWidth: 3}} />
         <Controls />
         <MiniMap />
       </ReactFlow>
