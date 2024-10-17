@@ -6,6 +6,8 @@ from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeSt
 
 from ..models.chat import ChatRequest
 from src.buildyourbot.graph import get_graph
+
+
 router = APIRouter(prefix='/v1/chat')
 
 @router.get('/health')
