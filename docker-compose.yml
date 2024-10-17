@@ -1,6 +1,6 @@
 services:
   api:
-    restart: always
+    restart: unless-stopped
     build:
       context: ./server
     ports:
@@ -11,7 +11,7 @@ services:
       - api-network
 
   web:
-    restart: always
+    restart: unless-stopped
     build:
       context: ./client
     environment:
@@ -30,16 +30,16 @@ services:
       - db-network
       - chat-network
   db:
-    restart: always
+    restart: unless-stopped
     build:
       context: ./db
     # environment:
     #   - 
     #   - 
     env_file:
-      - ./chat/.env
+      - ./db/.env
     ports:
-      - "3001:8501"
+      - "3003:80"
     # volumes:
     #   - ./chat:/app
     networks:
@@ -47,16 +47,16 @@ services:
       - api-network
   
   chat:
-    restart: always
+    restart: unless-stopped
     build:
       context: ./chat
     # environment:
     #   - 
     #   - 
     env_file:
-      - ./db/.env
+      - ./chat/.env
     ports:
-      - "3002:80"
+      - "3001:8501"
     # volumes:
     #   - ./db:/app
     networks:
