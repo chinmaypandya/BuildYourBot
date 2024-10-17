@@ -44,9 +44,9 @@ jobs:
     # Step 5: Run services with Docker Compose
     - name: Run services with Docker Compose
       run: |
-        docker-compose down --remove-orphans      # Clean up any orphaned containers
-        docker-compose pull                       # Pull the latest versions of the images
-        docker-compose up --build --force-recreate --detach --remove-orphans --no-deps
+        docker compose down --remove-orphans      # Clean up any orphaned containers
+        docker compose pull                       # Pull the latest versions of the images
+        docker compose up --build --force-recreate --detach --remove-orphans --no-deps
 
     # Step 6: Health check (optional, can add tests here)
     - name: Test services
