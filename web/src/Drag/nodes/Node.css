@@ -19,7 +19,7 @@
 .header-input input {
   font-size: 15px;
   background: #fff;
-  width: 60%;
+  width: 50%;
 }
 .header-input input::placeholder{
   color: #181818;
@@ -57,7 +57,7 @@
 }
 
 .save {
-  background: #7c7b7b;
+  background: #495464;
   color: #f6f6f6;
   border: none;
   height: 35px;
@@ -68,6 +68,79 @@
 }
 
 .save:hover {
-  background: #181818;
+  background: #2A2D43;
   color: #fff;
+}
+
+
+
+#light .node-container {
+  background-color: #ecebeb;
+  border: 1px solid #ddd;
+}
+#dark .node-container {
+  background-color: #181818;
+  border: 1px solid #ddd;
+}
+
+#light .node-header{
+  color: #181818;
+}
+
+#dark .node-header{
+  color: #ccc;
+}
+
+#light .node-input label {
+  color: #181818;
+}
+#dark .node-input label {
+  color: #ccc;
+}
+
+#light .node-input input{
+  background-color: #fff; 
+  color: #000; 
+}
+#dark .node-input input{
+  background-color: #444343; 
+  color: #fff; 
+}
+
+
+#light .node-input input:focus {
+  border-color: #181818;
+  background-color: #fff;
+}
+#dark .node-input input:focus {
+  border-color: #3ECF8E;
+  background-color: #444343;
+}
+
+#light .node-input input::placeholder {
+  color: #181818;
+}
+#dark .node-input input::placeholder {
+  color: #fff;
+}
+
+
+#light .save {
+  background: #495464;
+  color: #f6f6f6;
+}
+
+#light .save:hover {
+  background: #2A2D43;
+  color: #fff;
+}
+
+#dark .save {
+  background: #303030;
+  color: #3ECF8E;
+}
+
+#dark .save:hover {
+  background: #3ECF8E;
+  color: #181818;
 }

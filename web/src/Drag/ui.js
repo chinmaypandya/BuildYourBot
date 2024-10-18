@@ -5,7 +5,7 @@ import { shallow } from 'zustand/shallow';
 import { Node } from './nodes/inputNode';
 import { RouterNode } from './nodes/routerNode';
 import { ReactNode } from './nodes/reactNode';
-import { SimpleNode } from './nodes/simpleNode';
+// import { SimpleNode } from './nodes/simpleNode';
 
 import 'reactflow/dist/style.css';
 
@@ -29,6 +29,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  theme : state.theme
 });
 
 export const PipelineUI = () => {
@@ -43,7 +44,8 @@ export const PipelineUI = () => {
     addNode,
     onNodesChange,
     onEdgesChange,
-    onConnect
+    onConnect,
+    theme
   } = useStore(selector, shallow);
 
   // Function to initialize node data
@@ -109,6 +111,10 @@ export const PipelineUI = () => {
     sessionStorage.setItem('edges', JSON.stringify(edges));
   }, [nodes, edges]);
  
+  const connectionLineStyle = {
+    stroke: theme === 'dark' ? '#fff' : '#000',
+    strokeWidth: 2,
+  };
   return (
     <div ref={reactFlowWrapper} style={{ width: '95vw', height: '80vh', marginLeft: '70px' }}>
       <ReactFlow
@@ -124,7 +130,7 @@ export const PipelineUI = () => {
         proOptions={proOptions}
         snapGrid={[gridSize, gridSize]} 
         connectionLineType='smoothstep' 
-        connectionLineStyle={{ stroke: '#000', strokeWidth: 2 }}
+        connectionLineStyle={connectionLineStyle}
       >
         <Background gap={gridSize} style={{stroke: '#9a9999', strokeWidth: 3}} />
         <Controls />

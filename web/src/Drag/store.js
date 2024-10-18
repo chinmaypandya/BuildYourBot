@@ -12,6 +12,15 @@ export const useStore = create((set, get) => ({
     nodes: JSON.parse(sessionStorage.getItem('nodes')) || [],
     edges: JSON.parse(sessionStorage.getItem('edges')) || [],
     nodeIDs: {},
+    theme: "dark", 
+
+
+    // Toggles the theme between 'light' and 'dark'
+    toggleTheme: () => {
+      set((state) => ({
+          theme: state.theme === "light" ? "dark" : "light",
+      }));
+    },
 
     // Generates a unique ID for a new node based on its type
     getNodeID: (type) => {
@@ -59,8 +68,8 @@ export const useStore = create((set, get) => ({
                 ...connection,
                 type: 'smoothstep',
                 animated: true,
-                markerEnd: { type: MarkerType.Arrow, height: "20px", width: "20px", color:"#000"},
-          style: { stroke: '#000', strokeWidth: 2 }, 
+                markerEnd: { type: MarkerType.Arrow, height: "20px", width: "20px", color:"#9a9999"},
+          style: { stroke: '#9a9999', strokeWidth: 2 }, 
             }, state.edges);
             sessionStorage.setItem('edges', JSON.stringify(updatedEdges));
             return { edges: updatedEdges };

@@ -1,0 +1,42 @@
+.draggable-node {
+    cursor: grab;
+    min-width: 80px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 8px;
+    /* background-color: #C5C3D5; */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .draggable-node:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .draggable-node.grabbing {
+    cursor: grabbing;
+  }
+  
+  .node-titles{
+    font-weight: bold;
+  }
+
+  #light .draggable-node{
+    background-color: #C5C3D5;
+  }
+  
+  #dark .draggable-node{
+    background-color: #181818;
+    border: 2px solid #3ECF8E;
+  }
+  
+  #light .node-titles{
+    color: #262b34;
+  }
+  
+  #dark .node-titles{
+    color: #fff;
+  }
