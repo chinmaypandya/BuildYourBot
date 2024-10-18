@@ -1,7 +1,6 @@
 import streamlit as st
 import asyncio
 from datetime import datetime
-from utils import get_streamed_response
 
 # Initialize ALL session state variables at the start
 if 'current_chat' not in st.session_state:
@@ -76,20 +75,16 @@ if user_query:
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     
-    # Get and display AI response
+    # Display bot response (same as user message)
     with st.chat_message('assistant'):
-        try:
-            bot_response = asyncio.run(get_streamed_response(user_query))
-            st.markdown(bot_response)
-            
-            # Add AI response to history
-            current_session['history'].append({
-                "role": "assistant",
-                "message": bot_response,
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
-        except Exception as e:
-            st.error(f"Error generating response: {str(e)}")
+        st.markdown(user_query)  # Echo user query as bot response
+        
+        # Add bot response to history (same as user query)
+        current_session['history'].append({
+            "role": "assistant",
+            "message": user_query,  # Echoing user query
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
     
     st.rerun()
 
