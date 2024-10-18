@@ -5,11 +5,12 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from threading import Thread
-import streamlit as st
 from datetime import datetime
 
 # Initialize FastAPI app
 api_app = FastAPI()
+
+
 
 # Allow CORS (Cross-Origin Resource Sharing)
 api_app.add_middleware(
@@ -42,10 +43,6 @@ def start_fastapi_thread():
 
 # Async function to handle the streaming response in the chat
 async def get_streamed_response(message):
-    # Initialize session state if it doesn't exist
-    if 'current_chat' not in st.session_state:
-        st.session_state.current_chat = []
-        
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(f"http://localhost:3001/chat_stream/{message}") as resp:
@@ -55,7 +52,7 @@ async def get_streamed_response(message):
                 response_text = ""
                 async for line in resp.content:
                     chunk = line.decode("utf-8").strip()
-                    if chunk and not chunk.startswith("data:"):
+                    if chunk:
                         response_text = chunk
                         break  # Stop after processing one response
                 
@@ -65,28 +62,3 @@ async def get_streamed_response(message):
         return f"Error connecting to server: {str(e)}"
     except Exception as e:
         return f"An error occurred: {str(e)}"
-
-# Optional: Add helper functions for chat management
-def initialize_chat_state():
-    """Initialize all required session state variables"""
-    if 'current_chat' not in st.session_state:
-        st.session_state.current_chat = []
-    
-    if 'chat_sessions' not in st.session_state:
-        st.session_state.chat_sessions = [{
-            "title": "New Chat",
-            "history": []
-        }]
-    
-    if 'current_session_index' not in st.session_state:
-        st.session_state.current_session_index = 0
-
-def add_message_to_history(message, role="user"):
-    """Add a message to the current chat history"""
-    if 'chat_sessions' in st.session_state:
-        current_session = st.session_state.chat_sessions[st.session_state.current_session_index]
-        current_session['history'].append({
-            "role": role,
-            "message": message,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        })
