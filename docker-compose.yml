@@ -1,74 +1,63 @@
 services:
-  api:
+  ai:
     restart: unless-stopped
     build:
-      context: ./server
+      context: ai
+    env_file: "ai/.env"
     ports:
       - "3004:8000"
     # volumes:
-    #   - ./server:/app
+    #   - ai:/app
     networks:
-      - api-network
+      - ai-network
 
   web:
     restart: unless-stopped
     build:
-      context: ./client
-    environment:
-      - REACT_APP_SUPABASE_URL
-      - REACT_APP_SUPABASE_API
-    env_file:
-      - ./client/.env
+      context: web
+    env_file: web/.env
     ports:
       - "3000:80"
     # volumes:
-    #   - ./client:/app
-    
+    #   - web:/app
     networks:
       - web-network
-      - api-network
-      - db-network
+      - ai-network
+      - dbconn-network
       - chat-network
-  db:
+
+  dbconn:
     restart: unless-stopped
     build:
-      context: ./db
-    # environment:
-    #   - 
-    #   - 
-    env_file:
-      - ./db/.env
+      context: dbconn
+    env_file: dbconn/.env
     ports:
       - "3003:80"
     # volumes:
-    #   - ./chat:/app
+    #   - dbconn:/app
     networks:
       - chat-network
-      - api-network
+      - ai-network
   
   chat:
     restart: unless-stopped
     build:
-      context: ./chat
-    # environment:
-    #   - 
-    #   - 
-    # env_file:
-    #   - ./chat/.env
+      context: chat
+    env_file: chat/.env
     ports:
       - "3001:8501"
     # volumes:
-    #   - ./db:/app
+    #   - chat:/app
     networks:
-      - db-network
-      - api-network
+      - dbconn-network
+      - ai-network
 
 networks:
-  api-network:
+  ai-network:
     driver: bridge
   web-network:
     driver: bridge
-  db-network:
+  dbconn-network:
     driver: bridge
   chat-network:
     driver: bridge

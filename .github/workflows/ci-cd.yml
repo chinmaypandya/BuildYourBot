@@ -30,39 +30,44 @@ jobs:
 
     # Step 4: Build Docker images for the services
     - name: Build api service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/api-service ./server
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/api-service ./ai
 
     - name: Build web service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/web-service ./client
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/web-service ./web
 
     - name: Build chat service
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/chat-service ./chat
 
     - name: Build db service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/db-service ./db
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/dbconn-service ./dbconn
 
     # Step 5: Run services with Docker Compose
     - name: Run services with Docker Compose
       run: |
         docker compose up --force-recreate --detach --remove-orphans --no-deps
 
-    # Step 6: Health check (optional, can add tests here)
-    - name: Test services
+    # Step 6: Health check for services
+    - name: Health check for web service
       run: |
-        # Perform the health check for the web service
         response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
         if [[ "$response" -ne 200 ]]; then
           echo "Web service returned status code: $response"
-        exit 1  # Fail the job if not 200
+          exit 1  # Fail the job if not 200
+        else
+          echo "Web service is healthy, returned status code: $response"
         fi
+      continue-on-error: true
 
-        # Perform the health check for the API service
-        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3004/v1/chat/health)
+    - name: Health check for API service
+      run: |
+        response=$(curl -w "%{http_code}" http://localhost:3004/v1/chat/health)
         if [[ "$response" -ne 200 ]]; then
           echo "API service returned status code: $response"
           exit 1  # Fail the job if not 200
+        else
+          echo "AI service is healthy, returned status code: $response"
         fi
-      continue-on-error: true  # Proceed even if this step fails
+      continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
     - name: Show running containers and logs
