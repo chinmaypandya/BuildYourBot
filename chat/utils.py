@@ -48,7 +48,7 @@ async def get_streamed_response(message):
         
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"http://localhost:8000/chat_stream/{message}") as resp:
+            async with session.get(f"http://localhost:3001/chat_stream/{message}") as resp:
                 if resp.status != 200:
                     return f"Error: Server returned status code {resp.status}"
                 
