@@ -29,8 +29,8 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # Step 4: Build Docker images for the services
-    - name: Build api service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/api-service ./ai
+    - name: Build ai service
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/ai-service ./ai
 
     - name: Build web service
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/web-service ./web
@@ -38,8 +38,11 @@ jobs:
     - name: Build chat service
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/chat-service ./chat
 
-    - name: Build db service
+    - name: Build dbconn service
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/dbconn-service ./dbconn
+    
+    - name: Build redis service
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/redis-service ./redis
 
     # Step 5: Run services with Docker Compose
     - name: Run services with Docker Compose
