@@ -2,7 +2,7 @@ services:
   ai:
     restart: unless-stopped
     build:
-      context: ai
+      context: ./ai
     ports:
       - "3004:8000"
     # volumes:
@@ -14,7 +14,7 @@ services:
   web:
     restart: unless-stopped
     build:
-      context: web
+      context: ./web
     ports:
       - "3000:80"
     # volumes:
@@ -28,7 +28,7 @@ services:
   dbconn:
     restart: unless-stopped
     build:
-      context: dbconn
+      context: ./dbconn
     ports:
       - "3003:80"
     # volumes:
@@ -40,7 +40,7 @@ services:
   chat:
     restart: unless-stopped
     build:
-      context: chat
+      context: ./chat
     ports:
       - "3001:8501"
     # volumes:
@@ -53,11 +53,11 @@ services:
   redis:
     restart: unless-stopped
     build:
-      context: redis
+      context: ./redis
     ports:
       - "3005:6379"
     volumes:
-      - redis/data:/data
+      - ./redis/data:/data
     networks:
       - redis-network
 
