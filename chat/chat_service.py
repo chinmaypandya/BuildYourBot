@@ -12,8 +12,8 @@ class ChatService:
     def __init__(self):
         # Connect to Redis server
         self.redis_client = redis.StrictRedis(
-            host = os.getenv('REDIS_INTERNAL_HOST', 'redis'),
-            port = int(os.getenv('REDIS_INTERNAL_PORT', 6379)),
+            host=os.getenv('REDIS_INTERNAL_HOST', 'redis'),
+            port=int(os.getenv('REDIS_INTERNAL_PORT', 6379)),
             db=int(os.getenv("REDIS_DB", 0)),
             decode_responses=True
         )
@@ -22,6 +22,9 @@ class ChatService:
         # Create a unique session ID for the user
         session_id = str(uuid.uuid4())
         self.redis_client.hset(session_id, mapping={"user_id": user_id, "messages": json.dumps([])})
+        
+        # Add session ID to the user's list of sessions
+        self.redis_client.rpush(f"user:{user_id}:sessions", session_id)
         return session_id
 
     def store_message(self, session_id: str, user_id: str, role: str, message: str):
@@ -54,9 +57,14 @@ class ChatService:
         messages = json.loads(self.redis_client.hget(session_id, "messages"))
         return messages
 
-# Example usage
-# chat_service = ChatService()
-# session_id = chat_service.create_session("user_123")
-# chat_service.store_message(session_id, "user_123", "user", "Hello!")
-# messages = chat_service.retrieve_messages(session_id, "user_123")
-# print(messages)
+    def get_user_sessions(self, user_id: str) -> List[str]:
+        # Retrieve all session IDs associated with the user
+        session_ids = self.redis_client.lrange(f"user:{user_id}:sessions", 0, -1)
+        return session_ids
+
+    def delete_session(self, session_id: str, user_id: str):
+        """Deletes the session from Redis and removes it from the user's session list."""
+        # Remove the session from the user's list
+        self.redis_client.lrem(f"user:{user_id}:sessions", 0, session_id)
+        # Delete the session itself
+        self.redis_client.delete(session_id)
