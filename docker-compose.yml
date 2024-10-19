@@ -60,6 +60,25 @@ services:
       - ./redis/data:/data
     networks:
       - redis-network
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # Path to nginx.conf
+    depends_on:
+      - web
+      - chat
+      - dbconn
+      - ai
+    networks:
+      - web-network
+      - ai-network
+      - chat-network
+      - dbconn-network
+      - redis-network
 
 networks:
   ai-network:

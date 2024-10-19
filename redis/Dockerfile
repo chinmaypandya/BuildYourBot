@@ -1,4 +1,4 @@
-FROM redis:latest as build
+FROM redis:latest AS build
 
 # Copy a custom configuration file, if you have one
 # ADD redis.conf /usr/local/etc/redis/redis.conf
