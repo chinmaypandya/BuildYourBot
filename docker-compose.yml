@@ -73,6 +73,12 @@ services:
       - chat
       - dbconn
       - ai
+    networks:
+      - web-network
+      - ai-network
+      - chat-network
+      - dbconn-network
+      - redis-network
 
 networks:
   ai-network:
