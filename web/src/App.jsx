@@ -14,10 +14,11 @@ import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 
 function GraphPage(){
+  const { theme } = useStore(state => ({ theme: state.theme })); 
   const { graphId } = useParams();
 
   return(
-    <div>
+    <div id={theme}>
       <Graph graphId={graphId}/>
     </div>
   )
@@ -25,7 +26,7 @@ function GraphPage(){
 }
 
 function GraphIDPage() {
-
+  const { theme } = useStore(state => ({ theme: state.theme })); 
   const sessionToken = Cookies.get('session_token');
   let decodedUserId;
 
@@ -45,7 +46,7 @@ function GraphIDPage() {
   }
 
   return (
-    <div>
+    <div id={theme}>
       <GraphHistory userId={decodedUserId} />
     </div>
   );

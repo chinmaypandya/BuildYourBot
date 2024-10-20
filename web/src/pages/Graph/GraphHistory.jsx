@@ -43,9 +43,13 @@ const GraphHistory = ({ userId }) => {
           {graphData.graphIds.map(graph => (
             <li key={graph.id} className="graph-item">
               <Link to={`/graph/${graph.id}`} className="graph-link">
-                <h2>Graph Id: {graph.id}</h2>
-                <h2>Name: {graph.name}</h2>
-                <p>Description: {graph.description}</p>
+                <div className="graph-id-name">
+                    <h2>Graph Id: {graph.id}</h2>
+                    <h2>Name: {graph.name}</h2>   
+                </div>
+                <div className="graph-desc">
+                    <h2>Description: {graph.description}</h2>
+                </div>
               </Link>
             </li>
           ))}
