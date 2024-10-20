@@ -7,11 +7,17 @@ WORKDIR /app
 # Install dependencies (optimize cache by copying package files first)
 COPY package.json package-lock.json ./
 
-# Install dependencies (including dev dependencies)
-RUN npm i
-
 # Install TypeScript globally
 RUN npm i -g typescript pnpm
+
+# Set up PNPM_HOME and update PATH
+ENV PNPM_HOME=/usr/local/bin
+ENV PATH=$PNPM_HOME:$PATH
+
+RUN pnpm add -g serve
+
+# Install dependencies (including dev dependencies)
+RUN pnpm install
 
 # Copy source files and tsconfig.json
 COPY tsconfig.json ./
@@ -21,14 +27,16 @@ COPY src ./src
 RUN pnpm build
 
 
-# Stage 2: Serve the application
-FROM nginx:alpine AS production
+FROM node:18-alpine as production
 
-# Set NODE_ENV to production
-ENV NODE_ENV=production
+COPY --from=build /usr/local/bin /usr/local/bin
+COPY --from=build /usr/local/lib /usr/local/lib
 
-# Copy the build files from the build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy application code from build stage
+COPY --from=build /app/build /app/build
 
-# Default command to run the server
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+WORKDIR /app/build
+
+CMD ["serve", "-s", "."]

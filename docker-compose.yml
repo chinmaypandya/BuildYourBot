@@ -30,7 +30,7 @@ services:
     build:
       context: ./dbconn
     ports:
-      - "3003:80"
+      - "3001:3000"
     # volumes:
     #   - dbconn:/app
     networks:
