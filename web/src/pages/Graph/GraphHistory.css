@@ -1,0 +1,71 @@
+/* GraphID.css */
+
+  
+  .graph-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    background-color: #202020;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+  }
+  
+  .loading, .error {
+    text-align: center;
+    font-size: 50px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #333333;
+    margin-bottom: 20px;
+  }
+  
+  .graph-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .graph-item {
+    border-radius: 8px;
+    margin: 15px 0;
+    padding: 20px;
+    background-color: #282828;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  
+  .graph-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+  
+  h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin: 5px 0;
+  }
+  
+  p {
+    margin: 0;
+    color: #cccccc;
+    font-size: 20px;
+  }
+  
+  @media (max-width: 600px) {
+    .graph-container {
+      padding: 20px;
+    }
+  
+    h1 {
+      font-size: 2em;
+    }
+  
+    h2 {
+      font-size: 1.5em;
+    }
+  }
+  
