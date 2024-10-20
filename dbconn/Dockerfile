@@ -5,26 +5,21 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Install dependencies (optimize cache by copying package files first)
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json tsconfig.json .env webpack.config.js ./
 
 # Install TypeScript globally
 RUN npm i -g typescript pnpm
 
-# Set up PNPM_HOME and update PATH
-ENV PNPM_HOME=/usr/local/bin
-ENV PATH=$PNPM_HOME:$PATH
-
-RUN pnpm add -g serve
+RUN pnpm install --save-dev webpack webpack-cli ts-loader
 
 # Install dependencies (including dev dependencies)
 RUN pnpm install
 
 # Copy source files and tsconfig.json
-COPY tsconfig.json ./
-COPY src ./src
+COPY ./src ./src
 
 # Build the TypeScript project
-RUN pnpm build
+RUN pnpm run build
 
 
 FROM node:18-alpine as production
@@ -33,10 +28,10 @@ COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /usr/local/lib /usr/local/lib
 
 # Copy application code from build stage
-COPY --from=build /app/build /app/build
+COPY --from=build /app /app
 
 EXPOSE 3000
 
-WORKDIR /app/build
+WORKDIR /app
 
-CMD ["serve", "-s", "."]
+CMD ["pnpm", "run", "start"]
