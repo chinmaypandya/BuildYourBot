@@ -1,6 +1,6 @@
 # Build stage
 # FROM ghcr.io/withlogicco/poetry:1.8.3 AS build
-FROM getflow/python-poetry:1.8-python3.12-slim AS build
+FROM --platform=linux/amd64 getflow/python-poetry:1.8-python3.12-slim AS build
 # Set current working directory
 WORKDIR /app
 # copy the setup files to install dependencies
@@ -14,7 +14,7 @@ COPY . .
 # RUN poetry install
 
 
-FROM python:3.12-slim AS production
+FROM --platform=linux/amd64 python:3.12-slim AS production
 # Copy installed dependencies from build stage
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /usr/local/lib /usr/local/lib
