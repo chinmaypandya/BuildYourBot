@@ -1,1 +1,4 @@
-console.log("Hello World")
+while(true){
+    // do nothing
+    let x = 1;
+}
