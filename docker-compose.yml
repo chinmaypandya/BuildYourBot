@@ -49,6 +49,8 @@ services:
       - dbconn-network
       - ai-network
       - redis-network
+    depends_on:
+      - redis
   
   redis:
     restart: unless-stopped
