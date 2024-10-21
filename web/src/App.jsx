@@ -13,36 +13,31 @@ import { useParams } from "react-router-dom";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 
-function GraphPage(){
+const GraphPage = () => {
   const { theme } = useStore(state => ({ theme: state.theme })); 
   const { graphId } = useParams();
 
-  return(
+  return (
     <div id={theme}>
-      <Graph graphId={graphId}/>
+      <Graph graphId={graphId} />
     </div>
-  )
+  );
+};
 
-}
-
-function GraphIDPage() {
+const GraphIDPage = () => {
   const { theme } = useStore(state => ({ theme: state.theme })); 
   const sessionToken = Cookies.get('session_token');
   let decodedUserId;
 
-  // console.log("Session Token:", sessionToken);
-
   if (sessionToken) {
     try {
-      const decodedToken = jwtDecode(sessionToken); 
-      // console.log("Decoded Token:", decodedToken);
-      decodedUserId = decodedToken.userId; 
-      // console.log("Decoded User ID:", decodedUserId);
+      const { userId } = jwtDecode(sessionToken);
+      decodedUserId = userId;
     } catch (error) {
       console.error("Failed to decode token:", error);
     }
   } else {
-    console.warn("Session token is undefined. Check if the cookie is set correctly.");
+    console.warn("Session token is undefined.");
   }
 
   return (
@@ -50,7 +45,8 @@ function GraphIDPage() {
       <GraphHistory userId={decodedUserId} />
     </div>
   );
-  }
+};
+
 function App() {
   const { theme, toggleTheme } = useStore((state) => ({
     theme: state.theme,
