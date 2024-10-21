@@ -78,7 +78,7 @@ jobs:
     - name: Health check for AI service
       id: health_ai
       if: steps.build_ai.outcome == 'success'
-      run: curl -v http://localhost:8000/v1/chat/health || exit 1
+      run: curl -v http://0.0.0.0:8000/v1/chat/health || exit 1
       continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
@@ -86,7 +86,7 @@ jobs:
       if: always() # This will ensure logs are fetched even if the previous step fails
       run: |
         docker ps                                  # List all running containers
-        docker compose logs --tail=1000             # Fetch the last 100 lines of logs for each service
+        docker compose logs --tail=1000             # Fetch the last 1000 lines of logs for each service
 
     # Step 8: Shut down services after testing
     - name: Shut down services
