@@ -5,7 +5,7 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Install dependencies (optimize cache by copying package files first)
-COPY package.json package-lock.json tsconfig.json .env webpack.config.js ./
+COPY package.json package-lock.json tsconfig.json webpack.config.js ./
 
 # Install TypeScript globally
 RUN npm i -g typescript pnpm
