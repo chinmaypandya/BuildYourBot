@@ -18,6 +18,7 @@ const Sidebar = () => {
   const handleNavigate = () => {
     navigate("/graphs"); // Navigate to the /graphs page
   };
+
   // Function to sign out the user
   const signOutUser = async (event) => {
     event.preventDefault();
@@ -71,7 +72,7 @@ const Sidebar = () => {
           <BsNodePlus />
           {isHovered && <span>Node</span>}
         </div>
-        <div className="sidebar-item" onClick={handleNavigate} style={{cursor:'pointer'}}>
+        <div className="sidebar-item" onClick={handleNavigate} style={{ cursor: 'pointer' }}>
           <FaHistory />
           {isHovered && <span>History</span>}
         </div>
@@ -92,10 +93,10 @@ const Sidebar = () => {
           {isHovered && <span>Profile</span>}
         </div>
         <div className="sidebar-item">
-          <a href="#" onClick={signOutUser}>
+          <button onClick={signOutUser} className="logout-button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
             <MdLogout />
             {isHovered && <span className="logout">Logout</span>}
-          </a>
+          </button>
         </div>
       </div>
     </div>
