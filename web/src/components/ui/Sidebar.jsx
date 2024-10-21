@@ -5,6 +5,7 @@ import { BsNodePlus } from "react-icons/bs";
 import { MdOutlineSettings, MdLogout } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoHomeOutline } from "react-icons/io5";
+import { FaHistory } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios"; // Import axios for API calls
@@ -14,6 +15,9 @@ const Sidebar = () => {
   const [isHovered, setIsHovered] = useState(false); // State to track hover status
   const [isGraphOpen, setIsGraphOpen] = useState(false); // State to manage graph options visibility
 
+  const handleNavigate = () => {
+    navigate("/graphs"); // Navigate to the /graphs page
+  };
   // Function to sign out the user
   const signOutUser = async (event) => {
     event.preventDefault();
@@ -66,6 +70,10 @@ const Sidebar = () => {
         <div className="sidebar-item">
           <BsNodePlus />
           {isHovered && <span>Node</span>}
+        </div>
+        <div className="sidebar-item" onClick={handleNavigate} style={{cursor:'pointer'}}>
+          <FaHistory />
+          {isHovered && <span>History</span>}
         </div>
       </div>
 

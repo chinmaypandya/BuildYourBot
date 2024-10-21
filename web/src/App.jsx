@@ -1,13 +1,52 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-// import Success from "./pages/Success";
-import "./App.css";
+import { PipelineToolbar } from "./Drag/toolbar";
+import { PipelineUI } from "./Drag/ui";
+import { SubmitButton } from "./Drag/submit";
 import Sidebar from "./components/ui/Sidebar";
-import { PipelineToolbar } from './Drag/toolbar';
-import { PipelineUI } from './Drag/ui';
-import { SubmitButton } from './Drag/submit';
+import Login from "./pages/Login/Login";
 import { useStore } from './Drag/store'; 
+import Graph from "./pages/Graph/Graph";
+import GraphHistory from "./pages/Graph/GraphHistory";
+import "./App.css";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import {jwtDecode} from 'jwt-decode';
+import Cookies from 'js-cookie';
+
+const GraphPage = () => {
+  const { theme } = useStore(state => ({ theme: state.theme })); 
+  const { graphId } = useParams();
+
+  return (
+    <div id={theme}>
+      <Graph graphId={graphId} />
+    </div>
+  );
+};
+
+const GraphIDPage = () => {
+  const { theme } = useStore(state => ({ theme: state.theme })); 
+  const sessionToken = Cookies.get('session_token');
+  let decodedUserId;
+
+  if (sessionToken) {
+    try {
+      const { userId } = jwtDecode(sessionToken);
+      decodedUserId = userId;
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+    }
+  } else {
+    console.warn("Session token is undefined.");
+  }
+
+  return (
+    <div id={theme}>
+      <GraphHistory userId={decodedUserId} />
+    </div>
+  );
+};
+
 function App() {
   const { theme, toggleTheme } = useStore((state) => ({
     theme: state.theme,
@@ -17,12 +56,15 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login/>} />
+        <Route path="/" element={<Login />} />
+        <Route path="/graph/:graphId" element={<GraphPage />} />
+        <Route path="/graphs" element={<GraphIDPage />} />
+
         <Route
-        path="/success"
-        element={
-          <>
-          <div id={theme}>
+          path="/success"
+          element={
+            <>
+              <div id={theme}>
                 <div>
                   <Sidebar />
                 </div>
@@ -40,9 +82,9 @@ function App() {
                   <SubmitButton />
                 </div>
               </div>
-          </>
-        }
-      />
+            </>
+          }
+        />
       </Routes>
     </Router>
   );
