@@ -57,7 +57,7 @@ jobs:
     # Step 5: Run services with Docker Compose
     - name: Run services with Docker Compose
       run: |
-        docker compose up --force-recreate --detach --remove-orphans --no-deps
+        docker compose up --detach --remove-orphans
       continue-on-error: true
 
     # Step 6: Health check for services
