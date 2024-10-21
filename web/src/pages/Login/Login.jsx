@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import "./Login.css";
 import Cookies from "js-cookie";
+
 function Login() {
   // State for form inputs and error messages
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  
+
   // Hook for navigation
   const navigate = useNavigate();
 
@@ -17,15 +18,31 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
     try {
-      const response = await axios.post(`${process.env.REACT_APP_DB_URI}/api/auth/login`, {
-        email,
-        password,
-      }, { withCredentials: true });
+      const response = await axios.post(
+        `${process.env.REACT_APP_DB_URI}/api/auth/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 200) {
-        const accessToken = Cookies.get('access_token'); // Retrieve access token
-        console.log("Access Token:", accessToken);
-        navigate("/success"); // Navigate to home page
+        const accessToken = Cookies.get("access_token");
+        const sessionToken = Cookies.get("session_token");
+
+        // if (accessToken) {
+        //   console.log("Access Token:", accessToken);
+        // } else {
+        //   console.log("No access token found.");
+        // }
+
+        // if (sessionToken) {
+        //   console.log("Session Token:", sessionToken);
+        // } else {
+        //   console.log("No session token found.");
+        // }
+        navigate("/success"); // Navigate to success page
       }
     } catch (err) {
       // Set error message based on the response
@@ -37,17 +54,23 @@ function Login() {
   const responseGoogle = async (response) => {
     try {
       const { credential } = response;
-      const res = await axios.post(`${process.env.REACT_APP_DB_URI}/api/auth/google`, { accessToken: credential }, { withCredentials: true });
+      const res = await axios.post(
+        `${process.env.REACT_APP_DB_URI}/api/auth/google`,
+        { accessToken: credential },
+        { withCredentials: true }
+      );
 
       if (res.status === 200) {
-        const accessToken = Cookies.get('access_token'); // Retrieve access token
+        const accessToken = Cookies.get("access_token"); // Retrieve access token
         console.log("Access Token:", accessToken);
-        navigate("/success"); // Navigate to home page
+        navigate("/success"); // Navigate to success page
       }
     } catch (error) {
       console.error("Google login failed:", error);
       // Set error message based on the response
-      setError("Google login failed: " + error.response?.data?.error || error.message);
+      setError(
+        "Google login failed: " + error.response?.data?.error || error.message
+      );
     }
   };
 
@@ -55,8 +78,10 @@ function Login() {
     <div className="main">
       <div className="container">
         <div className="heading">Sign In</div>
-        {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>} {/* Display error message */}
-        
+        {error && (
+          <p style={{ color: "red", textAlign: "center" }}>{error}</p>
+        )}{" "}
+        {/* Display error message */}
         {/* Form for email/password login */}
         <form className="form" onSubmit={handleSubmit}>
           <input
@@ -79,14 +104,19 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)} // Update password state
           />
-          <input className="login-button" type="submit" value="Sign In" /> {/* Submit button */}
+          <span className="register">
+            <a href="#">Create new account</a>
+          </span>
+          <input className="login-button" type="submit" value="Sign In" />{" "}
+          {/* Submit button */}
         </form>
-        
         {/* Google login section */}
         <div className="social-account-container">
           <span className="title">Or Sign in with</span>
           <div className="social-accounts">
-            <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+            >
               <GoogleLogin
                 onSuccess={responseGoogle} // Handle success response
                 onFailure={responseGoogle} // Handle failure response

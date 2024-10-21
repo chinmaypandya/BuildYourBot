@@ -12,9 +12,29 @@
   overflow: hidden;
   z-index: 1000; 
 }
+#light .sidebar {
+  background-color: #262b34;
+  border-right: 1px solid #C5C3D5;
+}
+
+#dark .sidebar {
+  background-color: #181818;
+  border-right: 1px solid #3ECF8E;
+}
 
 .sidebar.hovered {
   width: 200px; 
+}
+#light .sidebar-item:hover {
+  background-color: #C5C3D5;
+  color:#262b34;
+  border: 1px solid #cdab3a;
+}
+
+#dark .sidebar-item:hover {
+  background-color: #2f2f30;
+  color:#fff;
+  border: 1px solid #3ECF8E;
 }
 
 .sidebar-item {
@@ -34,6 +54,15 @@
   height: 1px;
   margin: 10px 0; /* Adds space above and below the separator */
 }
+
+#light .separator {
+  background-color: #C5C3D5;
+}
+
+#dark .separator {
+  background-color: #3ECF8E;
+}
+
 .sidebar-item span {
   font-size: 16px;
   white-space: nowrap;
@@ -70,31 +99,8 @@
 }
 
 
-#light .sidebar {
-  background-color: #262b34;
-  border-right: 1px solid #C5C3D5;
-}
 
-#dark .sidebar {
-  background-color: #181818;
-  border-right: 1px solid #3ECF8E;
-}
 
-#light .sidebar-item:hover {
-  background-color: #C5C3D5;
-  color:#262b34
-}
 
-#dark .sidebar-item:hover {
-  background-color: #2f2f30;
-  color:#fff;
-}
 
-#light .separator {
-  background-color: #C5C3D5;
-}
-
-#dark .separator {
-  background-color: #3ECF8E;
-}
 

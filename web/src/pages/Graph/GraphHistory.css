@@ -1,0 +1,122 @@
+/* GraphHistory.css */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  #light {
+    background-color: #ccc;
+  }
+  #dark {
+    background-color: #181818;
+  }
+
+  .graph-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    
+  }
+  #light .graph-container{
+    background-color: #e1e1e1;
+  }
+  #dark .graph-container{
+    background-color: #181818;
+    border: 1px solid #3ECF8E;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  .loading, .error {
+    text-align: center;
+    font-size: 50px;
+    padding: 20px;
+    border-radius: 8px;
+    color: rgb(251, 54, 54);
+    margin-bottom: 20px;
+  }
+  
+  #light .loading, .error{
+    color: #181818;
+  }
+  #dark .loading, .error{
+    color: #3ECF8E;
+  }
+  .graph-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .graph-item {
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    text-align: left;
+    height: min-content;
+    margin-bottom: 10px;
+  }
+  #light .graph-item{
+    background-color: #f9f9f9;
+    border: 1px solid #262b34;
+  }
+  #dark .graph-item{
+    background-color: #2f2f30;
+    
+  }
+  .graph-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .graph-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  .graph-id-name{
+    display: flex;
+    justify-content: space-between;
+  }
+  
+
+  #light .graph-link .graph-desc h2{
+    color: #504f4f;
+  }
+  #dark .graph-link .graph-desc h2{
+    color: #bbbbbb;
+  }
+  .graph-link h2 {
+    font-size: 15px;
+    /* margin: 10px 0; */
+  }
+
+  #light .graph-link h2{
+    color: #262b34;
+  }
+  #dark .graph-link h2{
+    color: #fff;
+  }
+  
+  h1 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  #light h1{
+    color: #262b34;
+  }
+  #dark h1{
+    color: #cccccc;
+  }
+
+  p {
+    margin: 0;
+    color: #cccccc;
+    font-size: 20px;
+  }
+  
