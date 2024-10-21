@@ -2,5 +2,3 @@ streamlit==1.25.0
 python-dotenv==1.0.0
 requests==2.31.0
 aiohttp>=3.8.1,<4.0.0
-fastapi==0.115.0
-uvicorn==0.31.1
