@@ -1,26 +1,30 @@
 import React from 'react';
-import './Drag_styles.css'; 
+import './Draggable_styles.css'; 
+
 export const DraggableNode = ({ type, label }) => {
-  // Function to handle the start of dragging
-  const onDragStart = (event, nodeType) => {
-    const appData = { nodeType }; // Data to be transferred during the drag
-    event.target.classList.add('grabbing'); // Add grabbing class
-    event.dataTransfer.setData('application/reactflow', JSON.stringify(appData)); // Set the data for the drag event
-    event.dataTransfer.effectAllowed = 'move'; // Allow move operation
+  // Handle the start of dragging
+  const handleDragStart = (event) => {
+    const appData = { nodeType: type };
+    
+    // Add grabbing style and set drag data
+    event.target.classList.add('is-grabbing');
+    event.dataTransfer.setData('application/reactflow', JSON.stringify(appData));
+    event.dataTransfer.effectAllowed = 'move';
   };
 
-  const onDragEnd = (event) => {
-    event.target.classList.remove('grabbing'); // Remove grabbing class on drag end
+  // Handle the end of dragging
+  const handleDragEnd = (event) => {
+    event.target.classList.remove('is-grabbing');
   };
 
   return (
     <div
-      className={`draggable-node ${type}`} 
-      onDragStart={(event) => onDragStart(event, type)} // Start drag event
-      onDragEnd={onDragEnd} // Reset cursor style on drag end
-      draggable // Enable dragging
+      className={`draggable-node draggable-node--${type}`} // Use BEM convention for CSS class names
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      draggable // Make the node draggable
     >
-      <span className='node-titles'>{label}</span> {/* Display label */}
+      <span className='draggable-node__label'>{label}</span> {/* Node label */}
     </div>
   );
 };

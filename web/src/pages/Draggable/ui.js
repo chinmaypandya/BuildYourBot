@@ -5,19 +5,16 @@ import { shallow } from 'zustand/shallow';
 import { Node } from './nodes/inputNode';
 import { RouterNode } from './nodes/routerNode';
 import { ReactNode } from './nodes/reactNode';
-// import { SimpleNode } from './nodes/simpleNode';
-
 import 'reactflow/dist/style.css';
 
-const gridSize = 50; // Size of the grid for snapping nodes
-const proOptions = { hideAttribution: true }; // Pro options for ReactFlow
+const GRID_SIZE = 50; // Size of the grid for snapping nodes
+const PRO_OPTIONS = { hideAttribution: true }; // Pro options for ReactFlow
 
 // Mapping node types to their corresponding components
-const nodeTypes = {
+const NODE_TYPES = {
   simple_node: Node,
   router_node: RouterNode,
   react_node: ReactNode,
-  // Add other node types here as needed
 };
 
 // Selector for Zustand store state
@@ -29,7 +26,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
-  theme : state.theme
+  theme: state.theme,
 });
 
 export const PipelineUI = () => {
@@ -45,25 +42,24 @@ export const PipelineUI = () => {
     onNodesChange,
     onEdgesChange,
     onConnect,
-    theme
+    theme,
   } = useStore(selector, shallow);
 
-  // Function to initialize node data
+  // Initialize node data
   const getInitNodeData = (nodeID, type) => ({
     id: nodeID,
-    nodeType: `${type}`,
+    nodeType: type,
   });
 
   // Handle dropping a node onto the ReactFlow canvas
   const onDrop = useCallback((event) => {
     event.preventDefault();
-    
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    
-    // Check if a node is being dropped
-    if (event?.dataTransfer?.getData('application/reactflow')) {
-      const appData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
-      const type = appData?.nodeType;
+
+    const dataTransfer = event.dataTransfer.getData('application/reactflow');
+    if (dataTransfer) {
+      const appData = JSON.parse(dataTransfer);
+      const { nodeType: type } = appData || {};
 
       if (!type) return; // Exit if node type is undefined
 
@@ -81,7 +77,7 @@ export const PipelineUI = () => {
         position,
         data: getInitNodeData(nodeID, type),
       };
-      
+
       addNode(newNode);
     }
   }, [reactFlowInstance, addNode, getNodeID]);
@@ -110,11 +106,13 @@ export const PipelineUI = () => {
     sessionStorage.setItem('nodes', JSON.stringify(nodes));
     sessionStorage.setItem('edges', JSON.stringify(edges));
   }, [nodes, edges]);
- 
+
+  // Define connection line style based on the theme
   const connectionLineStyle = {
     stroke: theme === 'dark' ? '#fff' : '#000',
     strokeWidth: 2,
   };
+
   return (
     <div ref={reactFlowWrapper} style={{ width: '95vw', height: '80vh', marginLeft: '70px' }}>
       <ReactFlow
@@ -126,13 +124,13 @@ export const PipelineUI = () => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         onInit={setReactFlowInstance}
-        nodeTypes={nodeTypes}
-        proOptions={proOptions}
-        snapGrid={[gridSize, gridSize]} 
+        nodeTypes={NODE_TYPES}
+        proOptions={PRO_OPTIONS}
+        snapGrid={[GRID_SIZE, GRID_SIZE]} 
         connectionLineType='smoothstep' 
         connectionLineStyle={connectionLineStyle}
       >
-        <Background gap={gridSize} style={{stroke: '#9a9999', strokeWidth: 3}} />
+        <Background gap={GRID_SIZE} style={{ stroke: '#9a9999', strokeWidth: 3 }} />
         <Controls />
         <MiniMap />
       </ReactFlow>
