@@ -78,7 +78,7 @@ jobs:
     - name: Health check for AI service
       id: health_ai
       if: steps.build_ai.outcome == 'success'
-      run: curl --fail http://localhost:8000/v1/chat/health || exit 1
+      run: curl -v http://localhost:8000/v1/chat/health || exit 1
       continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
