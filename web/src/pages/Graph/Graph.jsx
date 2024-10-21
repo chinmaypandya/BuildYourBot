@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useStore } from '../Draggable/store'; // Import your Zustand store
 import { PipelineToolbar } from "../Draggable/toolbar";
@@ -17,20 +17,11 @@ const Graph = ({ graphId }) => {
     theme: state.theme,
     toggleTheme: state.toggleTheme,
   }));
-  // API URLs
+
   const GRAPH_API_URL = `http://localhost:4000/api/graph/${graphId}`;
   const CREATE_GRAPH_API_URL = 'http://localhost:3004/v1/chat/graph/create';
 
-  useEffect(() => {
-    isMounted.current = true;
-    fetchGraphData();
-
-    return () => {
-      isMounted.current = false;
-    };
-  }, [graphId]);
-
-  const fetchGraphData = async () => {
+  const fetchGraphData = useCallback(async () => {
     try {
       const response = await axios.get(GRAPH_API_URL);
       if (isMounted.current) {
@@ -38,7 +29,7 @@ const Graph = ({ graphId }) => {
         const edgesWithHandles = response.data.edges.map(edge => {
           const sourceHandle = edge.source + "-output";
           const targetHandle = edge.target + "-input";
-  
+
           return {
             ...edge,
             sourceHandle,
@@ -49,45 +40,41 @@ const Graph = ({ graphId }) => {
             id: "reactflow__edge-" + edge.source + sourceHandle + "-" + edge.target + targetHandle
           };
         });
-  
-        // Create a mapping of node IDs to nodes for easier lookup
+
         const nodeIdMap = {};
         response.data.nodes.forEach(node => {
           nodeIdMap[node.id] = node;
         });
-  
-        // Transform nodes to the required format
+
         const nodesWithPosition = response.data.nodes.map(node => {
           const updatedNode = {
             id: node.id,
-            type: node.nodeType || "simple_node", // Default to "simple_node" if missing
-            position: node.position || { x: 0, y: 0 }, // Default position
-            positionAbsolute: node.position || { x: 0, y: 0 }, // Same as position for now
-            dragging: false, // Set default dragging state
-            selected: false, // Set default selected state
+            type: node.nodeType || "simple_node",
+            position: node.position || { x: 0, y: 0 },
+            positionAbsolute: node.position || { x: 0, y: 0 },
+            dragging: false,
+            selected: false,
             data: {
               id: node.id,
               name: node.name,
               persona: node.persona,
               dos: node.dos,
-              donts:node.donts,
-              example: node.example
-              // Include other properties as needed
+              donts: node.donts,
+              example: node.example,
             }
           };
-  
-          // Replace ID with source_id or target_id from edges if a match is found
+
           edgesWithHandles.forEach(edge => {
             if (edge.source_id === node.id) {
-              updatedNode.id = edge.source; // Replace with source
+              updatedNode.id = edge.source;
             } else if (edge.target_id === node.id) {
-              updatedNode.id = edge.target; // Replace with target
+              updatedNode.id = edge.target;
             }
           });
-  
+
           return updatedNode;
         });
-  
+
         setEdges(edgesWithHandles);
         setNodes(nodesWithPosition);
       }
@@ -100,16 +87,21 @@ const Graph = ({ graphId }) => {
         setLoading(false);
       }
     }
-  };
-  
-  
-  
+  }, [GRAPH_API_URL, setEdges, setNodes]);
 
-  // Call handleCreateGraph only if graphData is not null and graph hasn't been created
+  useEffect(() => {
+    isMounted.current = true;
+    fetchGraphData();
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, [fetchGraphData]);
+
   useEffect(() => {
     if (graphData && !graphCreated) {
       handleCreateGraph(graphData);
-      setGraphCreated(true); // Set to true to prevent further creations
+      setGraphCreated(true);
     }
   }, [graphData, graphCreated]);
 
@@ -125,8 +117,6 @@ const Graph = ({ graphId }) => {
       const result = await axios.post(CREATE_GRAPH_API_URL, payload, { responseType: 'arraybuffer' });
       const imageBlob = new Blob([result.data], { type: 'image/png' });
       const imageUrl = URL.createObjectURL(imageBlob);
-
-      // Use a more user-friendly method to show the success message
       window.open(imageUrl, "_blank");
     } catch (error) {
       console.error("Error creating the graph:", error);
@@ -149,13 +139,12 @@ const Graph = ({ graphId }) => {
   if (error) {
     return <div>Error loading graph: {error}</div>;
   }
-  
 
   return (
     <div>
       <button onClick={toggleTheme} className="theme-toggle-btn">
-                {theme === "light" ? "Dark Theme" : "Light Theme"}
-              </button>
+        {theme === "light" ? "Dark Theme" : "Light Theme"}
+      </button>
       <PipelineToolbar />
       <PipelineUI />
       <SubmitButton />
