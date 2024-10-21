@@ -12,8 +12,8 @@ class ChatService:
     def __init__(self):
         # Connect to Redis server
         self.redis_client = redis.StrictRedis(
-            host=os.getenv("REDIS_INTERNAL_HOST"),
-            port=os.getenv("REDIS_INTERNAL_PORT"),
+            host = os.getenv('REDIS_INTERNAL_HOST', 'redis'),
+            port = int(os.getenv('REDIS_INTERNAL_PORT', 6379)),
             db=int(os.getenv("REDIS_DB", 0)),
             decode_responses=True
         )

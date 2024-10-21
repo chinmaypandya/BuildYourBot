@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 # Base image: Use the slim version of Python 3.12 for a smaller image size
 FROM python:3.12-bullseye AS build
+=======
+FROM python:3.11-bullseye AS build
+
+RUN pip install streamlit python-dotenv requests aiohttp fastapi uvicorn redis
+>>>>>>> 9180ffb (fix(chat):redis host error)
 
 # Set working directory
 WORKDIR /app
