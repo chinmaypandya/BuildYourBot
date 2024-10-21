@@ -1,9 +1,9 @@
-import { PipelineToolbar } from "./Drag/toolbar";
-import { PipelineUI } from "./Drag/ui";
-import { SubmitButton } from "./Drag/submit";
+import { PipelineToolbar } from "./pages/Draggable/toolbar";
+import { PipelineUI } from "./pages/Draggable/ui";
+import { SubmitButton } from "./pages/Draggable/submit";
 import Sidebar from "./components/ui/Sidebar";
 import Login from "./pages/Login/Login";
-import { useStore } from './Drag/store'; 
+import { useStore } from './pages/Draggable/store'; 
 import Graph from "./pages/Graph/Graph";
 import GraphHistory from "./pages/Graph/GraphHistory";
 import "./App.css";

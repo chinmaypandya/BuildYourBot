@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { useStore } from '../../Drag/store'; // Import your Zustand store
-import { PipelineToolbar } from "../../Drag/toolbar";
-import { PipelineUI } from "../../Drag/ui";
-import { SubmitButton } from "../../Drag/submit";
+import { useStore } from '../Draggable/store'; // Import your Zustand store
+import { PipelineToolbar } from "../Draggable/toolbar";
+import { PipelineUI } from "../Draggable/ui";
+import { SubmitButton } from "../Draggable/submit";
 
 const Graph = ({ graphId }) => {
   const setNodes = useStore((state) => state.setNodes);
