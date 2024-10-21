@@ -1,73 +1,146 @@
 import streamlit as st
-import asyncio
-import aiohttp
-from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware
-from threading import Thread
-import uvicorn
-from chat_history import add_to_chat_history, display_chat_history
+from datetime import datetime
+from chat_service import ChatService
 
+# Initialize ChatService
+chat_service = ChatService()
 
-# Initialize FastAPI app
-api_app = FastAPI()
+# Initialize ALL session state variables at the start
+if 'current_chat' not in st.session_state:
+    st.session_state.current_chat = []
 
-# Allow CORS (Cross-Origin Resource Sharing)
-api_app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins, can be limited in production
-    allow_methods=["*"],   # Allow all HTTP methods
-    allow_headers=["*"],   # Allow all headers
-)
+if 'chat_sessions' not in st.session_state:
+    st.session_state.chat_sessions = []
 
-# Async function to simulate streaming chat responses
-async def generate_chat_responses(message: str):
-    await asyncio.sleep(1)  # Simulate a delay before sending the response
-    yield f"data: {message} \n\n"  # Send the whole message as a response
+if 'current_session_index' not in st.session_state:
+    st.session_state.current_session_index = 0
 
-# FastAPI route to stream the message back
-@api_app.get("/chat_stream/{message}")
-async def chat_stream(message: str):
-    return StreamingResponse(generate_chat_responses(message=message), media_type="text/event-stream")
+if 'user_id' not in st.session_state:
+    st.session_state.user_id = None  # Store the user ID in session state
 
-# Function to run FastAPI server in a separate thread
-def run_fastapi():
-    uvicorn.run(api_app, host="0.0.0.0", port=8000)
+def load_existing_sessions(user_id):
+    """Load all sessions for the user and retrieve chat history."""
+    session_ids = chat_service.get_user_sessions(user_id)
+    st.session_state.chat_sessions = []  # Clear current session list
+    for session_id in session_ids:
+        # Retrieve all messages for this session
+        history = chat_service.retrieve_messages(session_id, user_id)
+        # Add session to session state
+        st.session_state.chat_sessions.append({
+            "session_id": session_id,
+            "title": "Previous Chat",
+            "history": history
+        })
 
-# Start FastAPI in a new thread
-thread = Thread(target=run_fastapi)
-thread.start()
+def create_new_chat():
+    """Create a new chat session and store it in session state."""
+    session_id = chat_service.create_session(st.session_state.user_id)
+    st.session_state.chat_sessions.append({
+        "session_id": session_id,
+        "title": "New Chat",
+        "history": []
+    })
+    st.session_state.current_session_index = len(st.session_state.chat_sessions) - 1
+    st.session_state.current_chat = []  # Reset current chat
 
-# Ensure session state is initialized for chat history
-if 'chat_history' not in st.session_state:
-    st.session_state['chat_history'] = []
+def get_session_title(session):
+    """Return the title based on the first message in the session history."""
+    if session['history']:
+        first_message = next((msg['message'] for msg in session['history'] if msg['role'] == 'user'), None)
+        if first_message:
+            return first_message[:30] + "..." if len(first_message) > 30 else first_message
+    return "New Chat"
 
-# Streamlit Sidebar (Navbar)
+# Sidebar for chat sessions
 with st.sidebar:
-    st.title("Chat History")  # Display chat history in the sidebar
+    st.title("Chat Sessions")
 
-# Streamlit Interface for Chat
-st.title("Build Your Bot")
+    # Input for user ID and store it in session state
+    if not st.session_state.user_id:
+        user_id_input = st.text_input("Enter your User ID")
+        if user_id_input:
+            st.session_state.user_id = user_id_input
+            load_existing_sessions(st.session_state.user_id)  # Load previous sessions
 
-# Input text area for user message
-user_input = st.text_area("Your message", placeholder="Type your message here...")
+    if st.session_state.user_id:
+        if st.button("New Chat"):
+            create_new_chat()
+            st._rerun()
 
-# Async function to handle the streaming response from FastAPI
-async def get_streamed_response(message):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"http://localhost:8000/chat_stream/{message}") as resp:
-            response_container = st.empty()  # Placeholder to display streaming data
-            async for line in resp.content:
-                chunk = line.decode("utf-8").replace("data: ", "").strip()  # Extract data
-                if chunk:
-                    response_container.markdown(f"**Bot:** {chunk}")  # Display streamed data
+        for idx, session in enumerate(st.session_state.chat_sessions):
+            session_title = get_session_title(session)
+            if st.button(f"Session {idx + 1}: {session_title}", key=f"session_{idx}"):
+                st.session_state.current_session_index = idx
+                st._rerun()
+    else:
+        st.warning("Please enter a User ID to start a chat.")
 
-# Button to send the message
-if st.button("Send"):
-    if user_input:  # If there is user input
-        add_to_chat_history(user_input)  # Add message to chat history
-        asyncio.run(get_streamed_response(user_input))  # Call the async function
+# Check if there are any chat sessions
+if st.session_state.chat_sessions:
+    # Main chat interface
+    st.title("Build Your Bot")
 
-        # Re-render the sidebar after the message is sent
-        with st.sidebar:
-            display_chat_history()  # Re-display chat history to ensure updates
+    current_session_index = st.session_state.current_session_index
+    current_session = st.session_state.chat_sessions[current_session_index]
+
+    current_title = get_session_title(current_session)
+    st.subheader(f"Current Session: {current_title}")
+
+    # Display chat history
+    if current_session['history']:
+        for entry in current_session['history']:
+            with st.chat_message(entry['role']):
+                st.markdown(entry['message'])
+                st.caption(f"{entry['timestamp']}")
+
+    # Chat input
+    user_query = st.chat_input("Ask anything")
+
+    if user_query:
+        # Display user message
+        with st.chat_message('user'):
+            st.markdown(f"""
+            <div class="user-message">
+                {user_query}
+                <div class="message-timestamp">{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Add user message to history
+        current_session['history'].append({
+            "role": "user",
+            "message": user_query,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+
+        # Store user message in Redis
+        session_id = current_session['session_id']
+        try:
+            chat_service.store_message(session_id, st.session_state.user_id, "user", user_query)
+        except ValueError as e:
+            st.error(str(e))  # Show authentication error if any
+
+        # Display bot response (same as user message)
+        with st.chat_message('assistant'):
+            st.markdown(user_query)  # Echo user query as bot response
+
+            # Add bot response to history (same as user query)
+            current_session['history'].append({
+                "role": "assistant",
+                "message": user_query,  # Echoing user query
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+
+        st._rerun()
+
+    # Clear chat functionality
+    if st.sidebar.button("Clear Current Chat"):
+        session_id = current_session['session_id']
+        chat_service.delete_session(session_id, st.session_state.user_id)
+        st.session_state.chat_sessions.pop(current_session_index)  # Remove from session state
+        st.session_state.current_session_index = max(0, current_session_index - 1)
+        st.session_state.current_chat = []
+        st._rerun()
+
+else:
+    st.warning("No chat sessions available. Please create a new chat session.")
