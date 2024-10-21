@@ -86,7 +86,7 @@ jobs:
       if: always() # This will ensure logs are fetched even if the previous step fails
       run: |
         docker ps                                  # List all running containers
-        docker compose logs --tail=100             # Fetch the last 100 lines of logs for each service
+        docker compose logs --tail=1000             # Fetch the last 100 lines of logs for each service
 
     # Step 8: Shut down services after testing
     - name: Shut down services
