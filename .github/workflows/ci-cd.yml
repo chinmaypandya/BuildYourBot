@@ -65,12 +65,23 @@ jobs:
       id: health_web
       if: steps.build_web.outcome == 'success'
       run: |
-        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001)
+        response=$(curl -s -w "%{http_code}" -o response.txt http://localhost:3001)
+    
+        # Check if curl was successful
+        if [[ $? -ne 0 ]]; then
+          echo "Error making request to AI service."
+          exit 1  # Fail the job if curl command fails
+        fi  
+    
+        response_body=$(<response.txt)  # Read the response body from the file
+
         if [[ "$response" -ne 200 ]]; then
           echo "Web service returned status code: $response"
+          echo "Response Body: $response_body"
           exit 1  # Fail the job if not 200
         else
           echo "Web service is healthy, returned status code: $response"
+          echo "Response Body: $response_body"
           exit 0
         fi
       continue-on-error: true
@@ -78,7 +89,26 @@ jobs:
     - name: Health check for AI service
       id: health_ai
       if: steps.build_ai.outcome == 'success'
-      run: curl -v http://0.0.0.0:8000/v1/chat/health || exit 1
+      run: |
+        response=$(curl -s -w "%{http_code}" -o response.txt http://localhost:8000/v1/chat/health)
+    
+        # Check if curl was successful
+        if [[ $? -ne 0 ]]; then
+          echo "Error making request to AI service."
+          exit 1  # Fail the job if curl command fails
+        fi  
+    
+        response_body=$(<response.txt)  # Read the response body from the file
+
+        if [[ "$response" -ne 200 ]]; then
+          echo "AI service returned status code: $response"
+          echo "Response Body: $response_body"
+          exit 1  # Fail the job if not 200
+        else
+          echo "AI service is healthy, returned status code: $response"
+          echo "Response Body: $response_body"
+          exit 0
+        fi
       continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
