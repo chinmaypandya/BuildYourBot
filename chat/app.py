@@ -65,13 +65,13 @@ with st.sidebar:
     if st.session_state.user_id:
         if st.button("New Chat"):
             create_new_chat()
-            st.rerun()
+            st._rerun()
 
         for idx, session in enumerate(st.session_state.chat_sessions):
             session_title = get_session_title(session)
             if st.button(f"Session {idx + 1}: {session_title}", key=f"session_{idx}"):
                 st.session_state.current_session_index = idx
-                st.rerun()
+                st._rerun()
     else:
         st.warning("Please enter a User ID to start a chat.")
 
@@ -131,7 +131,7 @@ if st.session_state.chat_sessions:
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
 
-        st.rerun()
+        st._rerun()
 
     # Clear chat functionality
     if st.sidebar.button("Clear Current Chat"):
@@ -140,7 +140,7 @@ if st.session_state.chat_sessions:
         st.session_state.chat_sessions.pop(current_session_index)  # Remove from session state
         st.session_state.current_session_index = max(0, current_session_index - 1)
         st.session_state.current_chat = []
-        st.rerun()
+        st._rerun()
 
 else:
     st.warning("No chat sessions available. Please create a new chat session.")
