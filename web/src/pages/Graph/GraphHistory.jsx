@@ -32,7 +32,7 @@ const GraphHistory = ({ userId }) => {
     };
 
     fetchGraphData();
-  }, [userId, API_URL]); // Dependencies for the effect
+  }, [userId, API_URL, ERROR_MESSAGES.network]); // Dependencies for the effect
 
   // Render loading state
   if (loading) {

@@ -1,17 +1,27 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
+import { useParams } from "react-router-dom";
+import Cookies from 'js-cookie';
+
+import { useStore } from './pages/Draggable/store'; 
 import { PipelineToolbar } from "./pages/Draggable/toolbar";
 import { PipelineUI } from "./pages/Draggable/ui";
 import { SubmitButton } from "./pages/Draggable/submit";
 import Sidebar from "./components/ui/Sidebar";
 import Login from "./pages/Login/Login";
-import { useStore } from './pages/Draggable/store'; 
 import Graph from "./pages/Graph/Graph";
 import GraphHistory from "./pages/Graph/GraphHistory";
 import "./App.css";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import {jwtDecode} from 'jwt-decode';
-import Cookies from 'js-cookie';
+
+// Route constants
+const ROUTES = {
+  HOME: "/",
+  GRAPH: "/graph/:graphId",
+  GRAPHS: "/graphs",
+  SUCCESS: "/success",
+};
 
 const GraphPage = () => {
   const { theme } = useStore(state => ({ theme: state.theme })); 
@@ -47,7 +57,7 @@ const GraphIDPage = () => {
   );
 };
 
-function App() {
+const App = () => {
   const { theme, toggleTheme } = useStore((state) => ({
     theme: state.theme,
     toggleTheme: state.toggleTheme,
@@ -56,38 +66,26 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/graph/:graphId" element={<GraphPage />} />
-        <Route path="/graphs" element={<GraphIDPage />} />
-
+        <Route path={ROUTES.HOME} element={<Login />} />
+        <Route path={ROUTES.GRAPH} element={<GraphPage />} />
+        <Route path={ROUTES.GRAPHS} element={<GraphIDPage />} />
         <Route
-          path="/success"
+          path={ROUTES.SUCCESS}
           element={
-            <>
-              <div id={theme}>
-                <div>
-                  <Sidebar />
-                </div>
-                <div>
-                  <button
-                    onClick={toggleTheme}
-                    className="theme-toggle-btn"
-                  > 
-                    {theme === "light" ? "Dark Theme" : "Light Theme"}
-                  </button>
-                  <PipelineToolbar />
-                </div>
-                <div>
-                  <PipelineUI />
-                  <SubmitButton />
-                </div>
-              </div>
-            </>
+            <div id={theme}>
+              <Sidebar />
+              <button onClick={toggleTheme} className="theme-toggle-btn">
+                {theme === "light" ? "Dark Theme" : "Light Theme"}
+              </button>
+              <PipelineToolbar />
+              <PipelineUI />
+              <SubmitButton />
+            </div>
           }
         />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
