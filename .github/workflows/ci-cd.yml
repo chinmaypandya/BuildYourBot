@@ -30,19 +30,24 @@ jobs:
 
     # Step 4: Build Docker images for the services
     - name: Build ai service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/ai-service ./ai
+      id: build_ai
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot-ai-service ./ai
 
     - name: Build web service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/web-service ./web
+      id: build_web
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot-web-service ./web
 
     - name: Build chat service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/chat-service ./chat
+      id: build_chat
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot-chat-service ./chat
 
     - name: Build dbconn service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/dbconn-service ./dbconn
+      id: build_dbconn
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot-dbconn-service ./dbconn
     
     - name: Build redis service
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot/redis-service ./redis
+      id: build_redis
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/buildyourbot-redis-service ./redis
 
     # Step 5: Run services with Docker Compose
     - name: Run services with Docker Compose
@@ -51,25 +56,21 @@ jobs:
 
     # Step 6: Health check for services
     - name: Health check for web service
+      id: health_web
       run: |
-        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3001)
         if [[ "$response" -ne 200 ]]; then
           echo "Web service returned status code: $response"
           exit 1  # Fail the job if not 200
         else
           echo "Web service is healthy, returned status code: $response"
+          exit 0
         fi
       continue-on-error: true
 
-    - name: Health check for API service
-      run: |
-        response=$(curl -w "%{http_code}" http://localhost:3004/v1/chat/health)
-        if [[ "$response" -ne 200 ]]; then
-          echo "API service returned status code: $response"
-          exit 1  # Fail the job if not 200
-        else
-          echo "AI service is healthy, returned status code: $response"
-        fi
+    - name: Health check for AI service
+      id: health_ai
+      run: curl --fail http://localhost:8000/v1/chat/health || exit 1
       continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
@@ -83,3 +84,12 @@ jobs:
     - name: Shut down services
       if: always()
       run: docker compose down
+    
+    # Step 9: Push Docker images to Docker Hub after passing tests
+    - name: Push ai service
+      if: steps.build_ai.outcome == 'success' && steps.health_ai.outcome == 'success'  # Push only if build and health check succeeded
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/buildyourbot-ai-service
+
+    - name: Push web service
+      if: steps.build_web.outcome == 'success' && steps.health_web.outcome == 'success'  # Push only if build and health check succeeded
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/buildyourbot-web-service
