@@ -1,26 +1,55 @@
 import streamlit as st
+from services.chat_service import ChatService
 
 class SidebarHandler:
-    def __init__(self, chat_service):
-        self.chat_service = chat_service
+  def __init__(self, chat_service: ChatService):
+    self.chat_service = chat_service
 
-    def display_sidebar(self):
-        """Displays the sidebar with chat session options."""
-        st.sidebar.title("Chat Sessions")  # Use st.sidebar for the sidebar
+  def display_sidebar(self):
+    with st.sidebar:
+      # New Chat button (automatically creates session)
+      if st.button("New Chat"):
+        new_session_id = self.chat_service.create_session(st.session_state.user_id)
 
-        # Create a new chat button
-        if st.sidebar.button("New Chat"):
-            # Call the service to create a new chat
-            session_id = self.chat_service.create_session(st.session_state.user_id)
-            st.session_state.current_session_id = session_id  # Update the current session ID
-            st.session_state.current_chat = []  # Reset the current chat history
-            st.session_state.chat_sessions.append({"session_id": session_id, "history": [], "title": "New Chat"})
-            st.experimental_rerun()
+        # Update session state and URL params
+        st.session_state.session_id = new_session_id
+        st.query_params['session_id'] = new_session_id
 
-        # Display existing sessions
-        for idx, session in enumerate(st.session_state.chat_sessions):
-            session_title = session['title']
-            if st.sidebar.button(f"Session {idx + 1}: {session_title}", key=f"session_{idx}"):
-                st.session_state.current_session_index = idx
-                st.session_state.current_session_id = session['session_id']  # Update session ID
-                st.experimental_rerun()
+        # Rerun to refresh the page with new session
+        st.rerun()
+
+      # Display existing sessions
+      st.write("Your conversations:")
+      try:
+        sessions = self.chat_service.get_user_sessions(st.session_state.user_id)
+        for session_id in sessions:
+          messages = self.chat_service.retrieve_messages(session_id, st.session_state.user_id)
+
+          # Get the first message or use a default title
+          session_title = f"Chat {session_id[:8]}..."  # Use first 8 chars of session ID
+
+          # If there are messages, use the first one as title (limited to 30 chars)
+          if messages and len(messages) > 0:
+            session_title = messages[0].get('message', session_title)[:30] + "..."
+
+          # Create a button for each session (doesn't create a new session)
+          if st.button(session_title, key=f"session_{session_id}"):
+            st.session_state.session_id = session_id
+            st.query_params['session_id'] = session_id
+            st.rerun()
+
+      except Exception as e:
+        st.error(f"Error loading sessions: {str(e)}")
+
+      # Add a delete button for current session
+      if 'session_id' in st.session_state and st.session_state.session_id:
+        if st.button("Delete Current Chat", key="delete_chat"):
+          self.chat_service.delete_session(
+              st.session_state.session_id,
+              st.session_state.user_id
+          )
+
+          # Clear session_id from state and URL
+          st.session_state.session_id = None
+          st.query_params['session_id'] = None
+          st.rerun()
