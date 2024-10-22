@@ -6,6 +6,7 @@ from langchain_core.runnables.graph import CurveStyle, MermaidDrawMethod, NodeSt
 
 from ..models.chat import ChatRequest
 from src.buildyourbot.graph import get_graph
+from src.buildyourbot.cache import cache_graph_data
 
 
 router = APIRouter(prefix='/v1/chat')
@@ -30,7 +31,14 @@ async def create_graph(request: Request, graph_data: ChatRequest):
                     draw_method=MermaidDrawMethod.API,
                 )
             )
-        )    
+        )
+        
+        cache_graph_data(
+            graph_id=graph_data.graph_id,
+            nodes=graph_data.nodes,
+            name=graph_data.name,
+            description=graph_data.description
+        )
     except Exception as e:
         print("Cannot Display png")
     
@@ -41,6 +49,7 @@ async def create_graph(request: Request, graph_data: ChatRequest):
     image_path = "./graph_image.png"
     with open(image_path, "wb") as f:
         f.write(image_bytes)
+    
     
     return FileResponse(image_path, media_type="image/png", filename="graph_image.png")
     

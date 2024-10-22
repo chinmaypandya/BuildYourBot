@@ -19,6 +19,7 @@ langchain-core = "0.3.10"
 langchain-community = "0.3.2"
 langchain-google-genai = "2.0.1"
 ipython = "8.28.0"
+redis = "4.5.1"
 
 
 [build-system]
