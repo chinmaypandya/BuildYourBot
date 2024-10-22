@@ -39,6 +39,11 @@ const SELECT_NODES_QUERY = `
     WHERE graph_id = $1;
 `;
 
+const SELECT_EDGES_QUERY = `
+    SELECT source, target, source_id, target_id
+    FROM edges
+    WHERE graph_id = $1;
+`;
 const INSERT_EDGE_QUERY = `
     INSERT INTO edges (graph_id, source_id,target_id, source, target, sourceName, targetName)
     VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -143,5 +148,20 @@ function buildHierarchy(graph: Graph, roots: string[], nodeDataMap: Map<string, 
 }
 
 
+export const getGraphById = async (req: Request, res: Response): Promise<void> => {
+    const { graphId } = req.params;
 
+    try {
+        const result = await pool.query(SELECT_NODES_QUERY, [graphId]);
+        const edgeresult = await pool.query(SELECT_EDGES_QUERY, [graphId]);
+        if (result.rows.length > 0) {
+            res.json({ graphId, nodes: result.rows , edges:edgeresult.rows});
+        } else {
+            res.status(404).json({ error: 'No nodes found for the provided graph ID' });
+        }
+    } catch (error) {
+        console.error('Error retrieving nodes from the database:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
