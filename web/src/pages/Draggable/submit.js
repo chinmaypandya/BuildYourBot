@@ -43,7 +43,7 @@ export const SubmitButton = () => {
       };
 
       const result = await axios.post(
-        "http://localhost:4000/api/graph/submit",
+        "http://localhost:3003/api/graph/create",
         payload
       );
       setResponse(result.data);
