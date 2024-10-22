@@ -132,11 +132,12 @@ jobs:
             
             # Make the curl request
             response=$(curl -S -w "%{http_code}" -o response.txt "$url")
+            local curl_exit_status=$?
 
             # Check if curl was successful
             if [[ $? -ne 0 ]]; then
-              echo "Error making request to $url. Curl exit status: $?"
-              exit 1  # Fail the job if curl command fails
+              echo "Error making request to $url. Curl exit status: $curl_exit_status"
+              # Continue to next attempt even if curl fails
             fi
             
             response_body=$(<response.txt)  # Read the response body from the file
