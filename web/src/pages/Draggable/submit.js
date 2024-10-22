@@ -1,18 +1,14 @@
-// SubmitButton.js
-
 import axios from "axios";
 import { useState } from "react";
 import { useStore } from "./store";
-import "./SubmitButton.css"; // Import CSS file for styling
-import { useNavigate } from "react-router-dom";
+import "./SubmitButton.css"; 
 
 export const SubmitButton = () => {
-    const navigate = useNavigate();
   const [response, setResponse] = useState(null);
   const { nodes, edges } = useStore();
-  const [graphResponse,setGraphResponse] = useState(null);
-  // eslint-disable-next-line
+  const [graphResponse, setGraphResponse] = useState(null);
   const [imageData, setImageData] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
 
   // Handle submitting the pipeline
   const handleSubmit = async () => {
@@ -20,6 +16,8 @@ export const SubmitButton = () => {
       console.error("Nodes or edges are undefined!");
       return;
     }
+
+    setLoading(true); // Start loading
 
     try {
       const payload = {
@@ -50,11 +48,12 @@ export const SubmitButton = () => {
       );
       setResponse(result.data);
       console.log(result.data);
-
       alert("Hierarchy pushed to DB successfully!");
     } catch (error) {
       console.error("Error submitting the pipeline:", error);
       alert("Failed to submit the pipeline. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -65,6 +64,8 @@ export const SubmitButton = () => {
       return;
     }
 
+    setLoading(true); // Start loading
+
     try {
       const payload = {
         graph_id: response.graphId,
@@ -73,7 +74,6 @@ export const SubmitButton = () => {
         description: "testing",
       };
       setGraphResponse(payload);
-
       const result = await axios.post(
         "http://localhost:3000/ai/v1/chat/graph/create",
         payload,
@@ -89,31 +89,40 @@ export const SubmitButton = () => {
     } catch (error) {
       console.error("Error creating the graph:", error);
       alert("Failed to create the graph. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
+
   const handleChat = async () => {
     if (!graphResponse) {
       console.error("No graph response available to create graph!");
       return;
     }
 
+    setLoading(true); // Start loading
+
     try {
-      navigate(`/c/?graph_id=${graphResponse.graphId}`, { state: { graphResponse } });
+      const url = `http://localhost:3000/c/?graph_id=${graphResponse.graph_id}`;
+      window.location.replace(url);
     } catch (error) {
-      console.error("Error creating the graph:", error);
-      alert("Failed to create the graph. Please try again.");
+      console.error("Error opening chat:", error);
+      alert("Failed to open chat. Please try again.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   // Reusable button component
-  const Button = ({ onClick, label, backgroundColor, hoverColor }) => (
+  const Button = ({ onClick, label, backgroundColor, hoverColor, disabled }) => (
     <button
       type="button"
       onClick={onClick}
       className="custom-button"
       style={{ backgroundColor }}
-      onMouseEnter={(e) => (e.target.style.backgroundColor = hoverColor)}
-      onMouseLeave={(e) => (e.target.style.backgroundColor = backgroundColor)}
+      disabled={disabled} // Disable button when loading
+      onMouseEnter={(e) => !disabled && (e.target.style.backgroundColor = hoverColor)}
+      onMouseLeave={(e) => !disabled && (e.target.style.backgroundColor = backgroundColor)}
     >
       {label}
     </button>
@@ -121,18 +130,25 @@ export const SubmitButton = () => {
 
   return (
     <>
+      {loading && (
+        <div className="overlay">
+          <div className="loader"></div> {/* Loading animation */}
+        </div>
+      )}
       <div className="button-container">
         <Button
           onClick={handleSubmit}
           label="Submit"
           backgroundColor="#4CAF50"
           hoverColor="green"
+          disabled={loading} // Disable when loading
         />
         <Button
           onClick={handleCreateGraph}
           label="Create Graph"
           backgroundColor="#007BFF"
           hoverColor="blue"
+          disabled={loading} // Disable when loading
         />
       </div>
       {imageData && (
@@ -141,7 +157,7 @@ export const SubmitButton = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexDirection:'column'
+            flexDirection: 'column'
           }}
         >
           <img
@@ -149,12 +165,13 @@ export const SubmitButton = () => {
             alt="Generated graph"
             style={{ maxWidth: "100%", height: "auto" }}
           />
-            <Button
+          <Button
             onClick={handleChat}
             label="Chat"
             backgroundColor="#007BFF"
             hoverColor="blue"
-            />
+            disabled={loading} // Disable when loading
+          />
         </div>
       )}
     </>
