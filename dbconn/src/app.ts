@@ -1,10 +1,10 @@
-// app.ts
 import express, { Application, Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth'; 
+import graphRoutes from './routes/graph'; 
 import { connectToDatabase } from './pool'; 
 
 dotenv.config();
@@ -31,18 +31,18 @@ const errorHandler = (err: Error, req: Request, res: Response, next: NextFunctio
 configureMiddleware(app);
 
 app.use('/api/auth', authRoutes);
-
+app.use('/api/graph', graphRoutes);
 // Apply error handling middleware
 app.use(errorHandler);
 
 // Connect to the database
 const startServer = async () => {
   try {
-    await connectToDatabase();
     const PORT = process.env.PORT || 4000;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
+    await connectToDatabase();
   } catch (error) {
     console.error('Database connection failed:', error);
   }

@@ -19,6 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "graphlib": "^2.1.8",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.0",
     "uuid": "^10.0.0"
@@ -27,6 +28,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/graphlib": "^2.1.12",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.8",
     "@types/pg": "^8.11.10",
