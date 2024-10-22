@@ -4,6 +4,7 @@ import { useStore } from '../Draggable/store'; // Import your Zustand store
 import { PipelineToolbar } from "../Draggable/toolbar";
 import { PipelineUI } from "../Draggable/ui";
 import { SubmitButton } from "../Draggable/submit";
+import GraphSidebar from '../../components/ui/GraphSidebar';
 
 const Graph = ({ graphId }) => {
   const setNodes = useStore((state) => state.setNodes);
@@ -19,13 +20,14 @@ const Graph = ({ graphId }) => {
   }));
 
   const GRAPH_API_URL = `http://localhost:4000/api/graph/${graphId}`;
-  const CREATE_GRAPH_API_URL = 'http://localhost:3004/v1/chat/graph/create';
+  const CREATE_GRAPH_API_URL = 'http://localhost:3000/ai/v1/chat/graph/create';
 
   const fetchGraphData = useCallback(async () => {
     try {
       const response = await axios.get(GRAPH_API_URL);
       if (isMounted.current) {
         setGraphData(response.data);
+        console.log(response.data.edges);
         const edgesWithHandles = response.data.edges.map(edge => {
           const sourceHandle = edge.source + "-output";
           const targetHandle = edge.target + "-input";
@@ -142,6 +144,7 @@ const Graph = ({ graphId }) => {
 
   return (
     <div>
+      <GraphSidebar/>
       <button onClick={toggleTheme} className="theme-toggle-btn">
         {theme === "light" ? "Dark Theme" : "Light Theme"}
       </button>

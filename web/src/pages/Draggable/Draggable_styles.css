@@ -26,6 +26,8 @@
 
   #light .draggable-node{
     background-color: #C5C3D5;
+    border: 2px solid #262b34;
+    color: #262b34;
   }
   
   #dark .draggable-node{

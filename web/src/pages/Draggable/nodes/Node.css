@@ -1,33 +1,69 @@
 .node-container {
+  position: relative;
   width: 300px;
   padding: 15px;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #ecebeb;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
+
+#light .node-container {
+  background-color: #ecebeb;
+  border: 1px solid #2A2D43;
+}
+
+#dark .node-container {
+  background-color: #181818;
+  border: 1px solid #3ECF8E;
+}
+
+
 
 .node-header {
   font-size: 1.4em;
   font-weight: bold;
-  color: #181818;
   margin-bottom: 15px;
 }
-
-.header-input input {
-  font-size: 15px;
-  background: #fff;
-  width: 50%;
-}
-.header-input input::placeholder{
+#light .node-header{
   color: #181818;
 }
+#dark .node-header{
+  color: #ccc;
+}
+
+
+
+.node-header input {
+  font-size: 15px;
+  width: 80%;
+  border-radius: 5px;
+}
+
+#light .node-header input::placeholder{
+  color: #717070;
+}
+
+#light .node-header input {
+  background: #fff;
+}
+
+#dark  .node-header input::placeholder{
+  color: #383737;
+}
+
+#dark .node-header input {
+  background: #9e9c9c;
+  color: #000;
+}
+
+
 
 .node-input {
   margin-bottom: 12px;
 }
+
 
 .node-input label {
   display: block;
@@ -35,6 +71,15 @@
   margin-bottom: 5px;
   color: #181818;
 }
+#light .node-input label {
+  color: #181818;
+}
+#dark .node-input label {
+  color: #ccc;
+}
+
+
+
 
 .node-input input {
   width: 100%; 
@@ -45,16 +90,44 @@
   color: #000; 
   transition: border-color 0.2s, background-color 0.2s;
 }
+#light .node-input input{
+  background-color: #fff; 
+  color: #000; 
+}
+#dark .node-input input{
+  background-color: #444343; 
+  color: #fff; 
+}
+
+
 
 .node-input input:focus {
   border-color: #181818;
   outline: none;
   background-color: #fff;
 }
+#light .node-input input:focus {
+  border-color: #181818;
+  background-color: #fff;
+}
+#dark .node-input input:focus {
+  border-color: #3ECF8E;
+  background-color: #444343;
+}
+
+
 
 .node-input input::placeholder {
   color: #181818;
 }
+#light .node-input input::placeholder {
+  color: #181818;
+}
+#dark .node-input input::placeholder {
+  color: #a8a8a8;
+}
+
+
 
 .save {
   background: #495464;
@@ -66,80 +139,24 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
-.save:hover {
-  background: #2A2D43;
-  color: #fff;
-}
-
-
-
-#light .node-container {
-  background-color: #ecebeb;
-  border: 1px solid #ddd;
-}
-#dark .node-container {
-  background-color: #181818;
-  border: 1px solid #ddd;
-}
-
-#light .node-header{
-  color: #181818;
-}
-
-#dark .node-header{
-  color: #ccc;
-}
-
-#light .node-input label {
-  color: #181818;
-}
-#dark .node-input label {
-  color: #ccc;
-}
-
-#light .node-input input{
-  background-color: #fff; 
-  color: #000; 
-}
-#dark .node-input input{
-  background-color: #444343; 
-  color: #fff; 
-}
-
-
-#light .node-input input:focus {
-  border-color: #181818;
-  background-color: #fff;
-}
-#dark .node-input input:focus {
-  border-color: #3ECF8E;
-  background-color: #444343;
-}
-
-#light .node-input input::placeholder {
-  color: #181818;
-}
-#dark .node-input input::placeholder {
-  color: #fff;
-}
-
-
 #light .save {
   background: #495464;
   color: #f6f6f6;
 }
-
-#light .save:hover {
-  background: #2A2D43;
-  color: #fff;
-}
-
 #dark .save {
   background: #303030;
   color: #3ECF8E;
 }
 
+
+.save:hover {
+  background: #2A2D43;
+  color: #fff;
+}
+#light .save:hover {
+  background: #2A2D43;
+  color: #fff;
+}
 #dark .save:hover {
   background: #3ECF8E;
   color: #181818;
