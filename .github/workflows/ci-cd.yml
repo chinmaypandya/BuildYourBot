@@ -65,50 +65,106 @@ jobs:
       id: health_web
       if: steps.build_web.outcome == 'success'
       run: |
-        response=$(curl -s -w "%{http_code}" -o response.txt http://localhost:3001)
-    
-        # Check if curl was successful
-        if [[ $? -ne 0 ]]; then
-          echo "Error making request to AI service."
-          exit 1  # Fail the job if curl command fails
-        fi  
-    
-        response_body=$(<response.txt)  # Read the response body from the file
+        # Function to check health of a service with retries
+        check_health() {
+          local url=$1
+          local max_attempts=5
+          local attempt=1
+          local wait_time=2  # Initial wait time in seconds
 
-        if [[ "$response" -ne 200 ]]; then
-          echo "Web service returned status code: $response"
-          echo "Response Body: $response_body"
-          exit 1  # Fail the job if not 200
-        else
-          echo "Web service is healthy, returned status code: $response"
-          echo "Response Body: $response_body"
-          exit 0
-        fi
+          echo "Starting health check for $url..."
+
+          while [[ $attempt -le $max_attempts ]]; do
+            echo "Attempting to check health at $url (Attempt $attempt)..."
+            
+            # Make the curl request
+            response=$(curl -S -w "%{http_code}" -o response.txt "$url")
+
+            # Check if curl was successful
+            if [[ $? -ne 0 ]]; then
+              echo "Error making request to $url. Curl exit status: $?"
+              exit 1  # Fail the job if curl command fails
+            fi
+            
+            response_body=$(<response.txt)  # Read the response body from the file
+
+            # Check the response code
+            if [[ "$response" -eq 200 ]]; then
+              echo "$url is healthy, returned status code: $response"
+              echo "Response Body: $response_body"
+              return 0  # Success
+            else
+              echo "$url returned status code: $response"
+              echo "Response Body: $response_body"
+              if [[ $attempt -lt $max_attempts ]]; then
+                echo "Retrying in $wait_time seconds..."
+                sleep $wait_time  # Wait before retrying
+                wait_time=$((wait_time * 2))  # Exponential backoff
+              fi
+            fi
+
+            ((attempt++))  # Increment the attempt counter
+          done
+
+          echo "$url did not start successfully after $max_attempts attempts."
+          exit 1  # Fail the job if not 200 after retries
+        }
+
+        # Health check for the Web service
+        check_health "http://localhost:3001"
       continue-on-error: true
 
     - name: Health check for AI service
       id: health_ai
       if: steps.build_ai.outcome == 'success'
       run: |
-        response=$(curl -s -w "%{http_code}" -o response.txt http://localhost:8000/v1/chat/health)
-    
-        # Check if curl was successful
-        if [[ $? -ne 0 ]]; then
-          echo "Error making request to AI service."
-          exit 1  # Fail the job if curl command fails
-        fi  
-    
-        response_body=$(<response.txt)  # Read the response body from the file
+        # Function to check health of a service with retries
+        check_health() {
+          local url=$1
+          local max_attempts=5
+          local attempt=1
+          local wait_time=2  # Initial wait time in seconds
 
-        if [[ "$response" -ne 200 ]]; then
-          echo "AI service returned status code: $response"
-          echo "Response Body: $response_body"
-          exit 1  # Fail the job if not 200
-        else
-          echo "AI service is healthy, returned status code: $response"
-          echo "Response Body: $response_body"
-          exit 0
-        fi
+          echo "Starting health check for $url..."
+
+          while [[ $attempt -le $max_attempts ]]; do
+            echo "Attempting to check health at $url (Attempt $attempt)..."
+            
+            # Make the curl request
+            response=$(curl -S -w "%{http_code}" -o response.txt "$url")
+
+            # Check if curl was successful
+            if [[ $? -ne 0 ]]; then
+              echo "Error making request to $url. Curl exit status: $?"
+              exit 1  # Fail the job if curl command fails
+            fi
+            
+            response_body=$(<response.txt)  # Read the response body from the file
+
+            # Check the response code
+            if [[ "$response" -eq 200 ]]; then
+              echo "$url is healthy, returned status code: $response"
+              echo "Response Body: $response_body"
+              return 0  # Success
+            else
+              echo "$url returned status code: $response"
+              echo "Response Body: $response_body"
+              if [[ $attempt -lt $max_attempts ]]; then
+                echo "Retrying in $wait_time seconds..."
+                sleep $wait_time  # Wait before retrying
+                wait_time=$((wait_time * 2))  # Exponential backoff
+              fi
+            fi
+
+            ((attempt++))  # Increment the attempt counter
+          done
+
+          echo "$url did not start successfully after $max_attempts attempts."
+          exit 1  # Fail the job if not 200 after retries
+        }
+
+        # Health check for the AI service
+        check_health "http://localhost:8000/v1/chat/health"
       continue-on-error: true
 
     # Step 7: Show running containers and logs (optional)
