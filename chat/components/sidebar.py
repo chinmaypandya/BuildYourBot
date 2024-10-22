@@ -1,44 +1,26 @@
 import streamlit as st
 
-def render_sidebar(chat_history):
-    # Inject custom CSS for better look
-    st.markdown("""
-        <style>
-        .sidebar .sidebar-content {
-            padding: 20px;
-        }
-        .chat-history-container {
-            max-height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f8f9fa;
-        }
-        .chat-message {
-            padding: 8px;
-            margin-bottom: 8px;
-            border-radius: 5px;
-        }
-        .user-message {
-            background-color: #e2f0ff;
-        }
-        .bot-message {
-            background-color: #f5f5f5;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+class SidebarHandler:
+    def __init__(self, chat_service):
+        self.chat_service = chat_service
 
-    st.sidebar.title("Chat History")
+    def display_sidebar(self):
+        """Displays the sidebar with chat session options."""
+        st.sidebar.title("Chat Sessions")  # Use st.sidebar for the sidebar
 
-    # Chat history container
-    st.sidebar.markdown('<div class="chat-history-container">', unsafe_allow_html=True)
+        # Create a new chat button
+        if st.sidebar.button("New Chat"):
+            # Call the service to create a new chat
+            session_id = self.chat_service.create_session(st.session_state.user_id)
+            st.session_state.current_session_id = session_id  # Update the current session ID
+            st.session_state.current_chat = []  # Reset the current chat history
+            st.session_state.chat_sessions.append({"session_id": session_id, "history": [], "title": "New Chat"})
+            st.experimental_rerun()
 
-    # Display chat history
-    for chat in chat_history:
-        user_msg = f'<div class="chat-message user-message"><strong>You:</strong> {chat["user"]}</div>'
-        bot_msg = f'<div class="chat-message bot-message"><strong>Bot:</strong> {chat["bot"]}</div>'
-        st.sidebar.markdown(user_msg, unsafe_allow_html=True)
-        st.sidebar.markdown(bot_msg, unsafe_allow_html=True)
-
-    st.sidebar.markdown('</div>', unsafe_allow_html=True)
+        # Display existing sessions
+        for idx, session in enumerate(st.session_state.chat_sessions):
+            session_title = session['title']
+            if st.sidebar.button(f"Session {idx + 1}: {session_title}", key=f"session_{idx}"):
+                st.session_state.current_session_index = idx
+                st.session_state.current_session_id = session['session_id']  # Update session ID
+                st.experimental_rerun()
