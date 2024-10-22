@@ -1,6 +1,6 @@
 
 import express from 'express';
-import {createGraph, getGraphById } from '../controllers/graph'; 
+import {createGraph, getAllGraphs, getGraphById } from '../controllers/graph'; 
 const router = express.Router();
 
 /**
@@ -17,5 +17,11 @@ router.post('/create', createGraph);
  */
 router.get('/:graphId', getGraphById);
 
+/**
+ * GET route to fetch all graphs for a specific user by userId.
+ * @route GET /user/:userId
+ * @access Public
+ */
+router.get('/user/:userId', getAllGraphs);
 
 export default router;

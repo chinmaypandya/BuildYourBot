@@ -44,6 +44,12 @@ const SELECT_EDGES_QUERY = `
     FROM edges
     WHERE graph_id = $1;
 `;
+
+const SELECT_GRAPHS_QUERY = `
+    SELECT id, name, description
+    FROM graphs
+    WHERE user_id = $1;
+`;
 const INSERT_EDGE_QUERY = `
     INSERT INTO edges (graph_id, source_id,target_id, source, target, sourceName, targetName)
     VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -165,3 +171,19 @@ export const getGraphById = async (req: Request, res: Response): Promise<void> =
     }
 };
 
+export const getAllGraphs = async (req: Request, res: Response): Promise<void> => {
+    const { userId } = req.params;
+
+    try {
+        const result = await pool.query(SELECT_GRAPHS_QUERY, [userId]);
+
+        if (result.rows.length > 0) {
+            res.json({ userId, graphIds: result.rows });
+        } else {
+            res.status(404).json({ error: 'No graphs found for the provided user ID' });
+        }
+    } catch (error) {
+        console.error('Error retrieving graph IDs from the database:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
