@@ -69,7 +69,9 @@ async def generate_response(request: Request, chat_request: ChatRequest):
     ).get_workflow()
     
     state = graph.a_invoke({
-        'messages': [HumanMessage(chat_request.user_message)]
+        "messages": [HumanMessage(chat_request.user_message)]
     })
     
+    ai_response = state["messages"][-1]
     
+    return ai_response

@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev:webpack": "webpack --mode development",
-    "start": "node build/bundle.js",
-    "dev": "ts-node-dev --respawn src/app.ts",
-    "watch": "webpack --watch"
+    "type-check": "npx tsc --noEmit",
+    "build": "npx webpack --mode production",
+    "dev:webpack": "npx webpack --mode development",
+    "start": "node --enable-source-maps --trace-warnings build/bundle.js",
+    "dev": "npx ts-node-dev --respawn src/app.ts",
+    "watch": "npx webpack --watch"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@swc/core": "^1.7.39",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
@@ -33,7 +35,7 @@
     "@types/node": "^22.7.8",
     "@types/pg": "^8.11.10",
     "@types/uuid": "^10.0.0",
-    "ts-loader": "^9.5.1",
+    "swc-loader": "^0.2.6",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3",
