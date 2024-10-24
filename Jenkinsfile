@@ -6,6 +6,21 @@ pipeline {
         DOCKER_PASSWORD = credentials('docker-password') // Jenkins credential ID
     }
 
+    triggers {
+        // Trigger the job when there is a change on GitHub (push events)
+        githubPush()
+
+        // Trigger the job for pull request events (using a webhook)
+        genericTrigger(
+            causeString: 'Triggered by GitHub Pull Request',
+            token: 'your-webhook-token', // GitHub webhook token
+            printContributedVariables: true,
+            printPostContent: true,
+            regexpFilterText: '$request_body',
+            regexpFilterExpression: '.*"action":"opened".*'
+        )
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
@@ -27,6 +42,15 @@ pipeline {
                 //         error("No branch found starting with 'test/'")
                 //     }
                 // }
+
+                // Check out the branch from the repository
+                // checkout([$class: 'GitSCM',
+                //           branches: [[name: 'test/*']],
+                //           userRemoteConfigs: [[
+                //              url: 'https://github.com/chinmaypandya/BuildYourBot.git',
+                //              credentialsId: 'github-account'
+                //           ]]
+                // ])
             }
         }
 
