@@ -42,7 +42,7 @@ services:
     build:
       context: ./chat
     ports:
-      - "8501:8501"
+      - "5173:5173"
     # volumes:
     #   - chat:/app
     networks:
