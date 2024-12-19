@@ -28,6 +28,8 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@sveltejs/adapter-node": "^5.2.11",
+		"@sveltejs/adapter-static": "^3.0.6",
 		"uuid": "^11.0.3"
 	}
 }
