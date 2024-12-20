@@ -4,11 +4,11 @@ FROM node:22-alpine AS build
 # Set working directory
 WORKDIR /app
 
-# Install dependencies (optimize cache by copying package files first)
-COPY package.json package-lock.json pnpm-lock.yaml ./
-
-# Install TypeScript globally
+# Install pnpm globally
 RUN npm i -g pnpm
+
+# Install dependencies (optimize cache by copying package files first)
+COPY package.json package-lock.json ./
 
 # Install dependencies (including dev dependencies)
 RUN pnpm install
@@ -16,14 +16,11 @@ RUN pnpm install
 # Move config files (optimize cache by moving config files first)
 COPY svelte.config.js eslint.config.js jsconfig.json tailwind.config.js vite.config.js .npmrc ./
 
-# Copy source files and tsconfig.json
+# Copy source files
 COPY . .
 
-# Compile typescript for type errors
-# RUN pnpm run type-check
-
-# Build the TypeScript project
-RUN pnpm run serve
+# Build the project
+CMD ["pnpm", "run", "serve", "--host", "0.0.0.0"]
 
 
 # FROM node:22-alpine as production
