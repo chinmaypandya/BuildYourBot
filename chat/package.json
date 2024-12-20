@@ -31,6 +31,8 @@
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.2.11",
 		"@sveltejs/adapter-static": "^3.0.6",
+		"axios": "^1.7.9",
+		"ioredis": "^5.4.1",
 		"uuid": "^11.0.3"
 	}
 }

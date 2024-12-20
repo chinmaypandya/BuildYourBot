@@ -1,69 +1,70 @@
 <script>
-  import { page } from "$app/stores";
+  import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import axios from 'axios'; 
   import './page_styles.css';
-  
+
   const graphId = $page.params.graph_id;
   const sessionId = $page.params.session_id;
 
   let chatHistory = [];
   let newMessage = "";
 
-  // Function to get chat history from localStorage based on sessionId
-  function loadChatHistory() {
-    const storedSessionsChats = localStorage.getItem(`sessions-${graphId}-chat`);
-    if (storedSessionsChats) {
-      const sessions = JSON.parse(storedSessionsChats);
-      // Find the session history for the current sessionId
-      const sessionHistory = sessions.find(session => session.sessionId === sessionId);
-      return sessionHistory ? sessionHistory.messages : [];
+  const axiosInstance = axios.create({
+    baseURL: '/api', 
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', 
     }
-    // Default history if no previous data exists
-    return [
-      { sender: "assistant", message: "Hello! How can I assist you today?" },
-      { sender: "user", message: "Hi there, I have a question about a project." },
-    ];
-  }
-
-  // Function to save chat history to localStorage based on sessionId
-  function saveChatHistory() {
-    const storedSessionsChats = localStorage.getItem(`sessions-${graphId}-chat`);
-    let sessions = storedSessionsChats ? JSON.parse(storedSessionsChats) : [];
-
-    // Find the current session in storedSessionsChats or create a new one
-    const existingSessionIndex = sessions.findIndex(session => session.sessionId === sessionId);
-    if (existingSessionIndex !== -1) {
-      // Update the existing session's history
-      sessions[existingSessionIndex].messages = chatHistory;
-    } else {
-      // Add new session if it doesn't exist
-      sessions.push({ sessionId, messages: chatHistory });
-    }
-
-    // Save the updated sessions array to localStorage
-    localStorage.setItem(`sessions-${graphId}-chat`, JSON.stringify(sessions));
-  }
-
-  // Only load the chat history after the component is mounted in the browser
-  onMount(() => {
-    chatHistory = loadChatHistory(); 
   });
 
-  // Function to send a new message
+  async function loadChatHistory() {
+    try {
+      const res = await axiosInstance.get(`/session`, {
+        params: { graphId, sessionId }
+      });
+
+      if (res.status === 200) {
+        chatHistory = res.data;
+      } else {
+        console.error(`Failed to load chat history: ${res.statusText}`);
+      }
+    } catch (err) {
+      console.error(`Error loading chat history: ${err}`);
+    }
+  }
+
+  async function saveChatHistory() {
+    try {
+      const res = await axiosInstance.post('/session', {
+        graphId,
+        sessionId,
+        messages: chatHistory,
+      });
+
+      if (res.status !== 200) {
+        console.error(`Failed to save chat history: ${res.statusText}`);
+      }
+    } catch (err) {
+      console.error(`Error saving chat history: ${err}`);
+    }
+  }
+
+  onMount(() => {
+    loadChatHistory();
+  });
+
   function sendMessage() {
     if (newMessage.trim()) {
-      // Add user message to chatHistory
       chatHistory = [...chatHistory, { sender: "user", message: newMessage }];
       newMessage = "";
 
-      // Save updated chat history to localStorage
       saveChatHistory();
 
-      // Simulate assistant response after a delay
       setTimeout(() => {
         chatHistory = [...chatHistory, {
           sender: "assistant",
-          message: "I'm processing your request. How can I help further?"
+          message: "I'm processing your request. How can I help further?",
         }];
         saveChatHistory();
       }, 1000);
@@ -88,18 +89,14 @@
 
   <div class="input-area">
     <div class="input-container">
-      <input 
-        type="text" 
+      <input
+        type="text"
         bind:value={newMessage}
-        on:keydown={(e) => e.key === "Enter" && sendMessage()}
-        placeholder="Type a message..." 
-        class="input-field" 
+        on:keydown={(e) => e.key === 'Enter' && sendMessage()}
+        placeholder="Type a message..."
+        class="input-field"
       />
-      <button 
-        on:click={sendMessage} 
-        disabled={!newMessage.trim()} 
-        class="send-button"
-      >
+      <button on:click={sendMessage} disabled={!newMessage.trim()} class="send-button">
         Send
       </button>
     </div>
