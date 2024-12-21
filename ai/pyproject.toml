@@ -10,7 +10,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "3.12.7"
+python = ">=3.12.7,<3.13"
 fastapi = {extras = ["standard"], version = "0.115.0"}
 uvicorn = "0.31.1"
 langgraph = "0.2.35"

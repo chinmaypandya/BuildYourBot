@@ -5,7 +5,7 @@ from IPython.display import Image, display
 from langchain_core.runnables.graph import MermaidDrawMethod
 from langchain_core.messages import HumanMessage
 
-from ..models.chat import CreateGraphRequest, ChatRequest
+from ..models import CreateGraphRequest, ChatRequest
 from src.buildyourbot.graph import get_graph
 from src.buildyourbot.cache import cache_graph_data, get_cached_graph_data
 
