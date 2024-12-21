@@ -54,17 +54,28 @@
     loadChatHistory();
   });
 
-  function sendMessage() {
+  async function sendMessage() {
     if (newMessage.trim()) {
+      userMessage = newMessage;
       chatHistory = [...chatHistory, { sender: "user", message: newMessage }];
       newMessage = "";
 
       saveChatHistory();
 
       setTimeout(() => {
+        
+        const res = await axios.post('http://ai:8000/v1/graph/chat',
+          {
+            graph_id:graphID,
+            user_message:newMessage
+          }
+        );
+
+        console.log(res);
+
         chatHistory = [...chatHistory, {
           sender: "assistant",
-          message: "I'm processing your request. How can I help further?",
+          message: res,
         }];
         saveChatHistory();
       }, 1000);
