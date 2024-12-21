@@ -43,7 +43,7 @@ export const SubmitButton = () => {
       };
 
       const result = await axios.post(
-        "http://localhost:3003/api/graph/create",
+        `${process.env.REACT_APP_DB_URI}/api/graph/create`,
         payload
       );
       setResponse(result.data);
@@ -75,7 +75,7 @@ export const SubmitButton = () => {
       };
       setGraphResponse(payload);
       const result = await axios.post(
-        "http://localhost:3000/ai/v1/chat/graph/create",
+        `${process.env.REACT_APP_AI_API}/v1/chat/graph/create`,
         payload,
         { responseType: "arraybuffer" }
       );
@@ -103,7 +103,7 @@ export const SubmitButton = () => {
     setLoading(true); // Start loading
 
     try {
-      const url = `http://localhost:3000/c/?graph_id=${graphResponse.graph_id}`;
+      const url = `${process.env.REACT_APP_CHAT_API_URL}/${graphResponse.graph_id}`;
       window.location.replace(url);
     } catch (error) {
       console.error("Error opening chat:", error);

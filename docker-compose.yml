@@ -8,8 +8,7 @@ services:
     # volumes:
     #   - ai:/app
     networks:
-      - ai-network
-      - redis-network
+      - app-network
 
   web:
     restart: unless-stopped
@@ -20,10 +19,7 @@ services:
     # volumes:
     #   - web:/app
     networks:
-      - web-network
-      - ai-network
-      - dbconn-network
-      - chat-network
+      - app-network
 
   dbconn:
     restart: unless-stopped
@@ -34,8 +30,7 @@ services:
     # volumes:
     #   - dbconn:/app
     networks:
-      - chat-network
-      - ai-network
+      - app-network
   
   chat:
     restart: unless-stopped
@@ -46,9 +41,7 @@ services:
     # volumes:
     #   - chat:/app
     networks:
-      - dbconn-network
-      - ai-network
-      - redis-network
+      - app-network
     depends_on:
       - redis
   
@@ -61,7 +54,7 @@ services:
     volumes:
       - ./redis/data:/data
     networks:
-      - redis-network
+      - app-network
   
   nginx:
     image: nginx:latest
@@ -93,4 +86,6 @@ networks:
   chat-network:
     driver: bridge
   redis-network:
+    driver: bridge
+  app-network:
     driver: bridge

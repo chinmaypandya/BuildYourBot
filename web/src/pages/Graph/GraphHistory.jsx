@@ -10,7 +10,7 @@ const GraphHistory = ({ userId }) => {
   const [error, setError] = useState(null);
 
   // API endpoint to fetch graphs for a specific user
-  const API_URL = `${process.env.DBCONN_API_URL}/api/graph/user/${userId}`;
+  const API_URL = `${process.env.REACT_APP_DB_URI}/api/graph/user/${userId}`;
   const ERROR_MESSAGES = {
     network: 'Network response was not ok',
   };
