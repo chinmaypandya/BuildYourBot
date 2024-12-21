@@ -75,7 +75,7 @@ export const SubmitButton = () => {
       };
       setGraphResponse(payload);
       const result = await axios.post(
-        `${process.env.REACT_APP_AI_API}/v1/chat/graph/create`,
+        `${process.env.REACT_APP_AI_URI}/v1/graph/create`,
         payload,
         { responseType: "arraybuffer" }
       );
