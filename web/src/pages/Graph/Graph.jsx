@@ -19,8 +19,8 @@ const Graph = ({ graphId }) => {
     toggleTheme: state.toggleTheme,
   }));
 
-  const GRAPH_API_URL = `http://localhost:3003/api/graph/${graphId}`;
-  const CREATE_GRAPH_API_URL = 'http://localhost:3000/ai/v1/chat/graph/create';
+  const GRAPH_API_URL = `http://dbconn:3002/api/graph/${graphId}`;
+  const CREATE_GRAPH_API_URL = 'http://ai:8000/v1/chat/graph/create';
 
   const fetchGraphData = useCallback(async () => {
     try {
