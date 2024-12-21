@@ -57,7 +57,7 @@ async def create_graph(request: Request, graph_data: CreateGraphRequest):
     
     return FileResponse(image_path, media_type="image/png", filename="graph_image.png")
 
-@router.post("/chat")
+@router.post("/graph/chat")
 async def generate_response(request: Request, chat_request: ChatRequest):
     graph_data = get_cached_graph_data(chat_request.graph_id)
     
