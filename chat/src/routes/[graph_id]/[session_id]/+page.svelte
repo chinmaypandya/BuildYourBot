@@ -54,7 +54,7 @@
     loadChatHistory();
   });
 
-  async function sendMessage() {
+  function sendMessage() {
     if (newMessage.trim()) {
       userMessage = newMessage;
       chatHistory = [...chatHistory, { sender: "user", message: newMessage }];
@@ -62,9 +62,9 @@
 
       saveChatHistory();
 
-      setTimeout(() => {
+      setTimeout(async () => {
         
-        const res = await axios.post('http://ai:8000/v1/graph/chat',
+        const res = await axios.post('http://localhost:8000/v1/graph/chat',
           {
             graph_id:graphID,
             user_message:newMessage
