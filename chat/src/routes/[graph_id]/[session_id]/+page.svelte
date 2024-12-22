@@ -82,7 +82,7 @@
 
         chatHistory = [...chatHistory, {
           sender: "assistant",
-          message: res,
+          message: res.data.content,
         }];
         saveChatHistory();
       }, 1000);

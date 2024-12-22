@@ -61,6 +61,8 @@ async def create_graph(request: Request, graph_data: CreateGraphRequest):
 async def generate_response(request: Request, chat_request: ChatRequest):
     graph_data = get_cached_graph_data(chat_request.graph_id)
     
+    print(graph_data)
+    
     graph = get_graph(
         graph_id=graph_data["graph_id"],
         nodes=graph_data["nodes"],
@@ -68,7 +70,7 @@ async def generate_response(request: Request, chat_request: ChatRequest):
         description=graph_data["description"]
     ).get_workflow()
     
-    state = graph.ainvoke({
+    state = await graph.ainvoke({
         "messages": [HumanMessage(chat_request.user_message)]
     })
     

@@ -47,7 +47,7 @@ class SimpleAgent:
     
     # @cache
     async def node(self, state: State, config: RunnableConfig) -> dict:
-        result = self.__agent.a_invoke(state, config)
+        result = await self.__agent.ainvoke(state, config)
         result.name = self.__name
         return {
             "messages": [result]
