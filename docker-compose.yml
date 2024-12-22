@@ -9,6 +9,8 @@ services:
     #   - ai:/app
     networks:
       - app-network
+    depneds_on:
+      - redis
 
   web:
     restart: unless-stopped
