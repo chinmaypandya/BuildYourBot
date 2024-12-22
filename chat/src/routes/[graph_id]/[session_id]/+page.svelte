@@ -68,6 +68,12 @@
           {
             graph_id:graphId,
             user_message:userMessage
+          },
+          {
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true
           }
         );
 
