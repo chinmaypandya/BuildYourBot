@@ -56,7 +56,7 @@
 
   function sendMessage() {
     if (newMessage.trim()) {
-      userMessage = newMessage;
+      let userMessage = newMessage;
       chatHistory = [...chatHistory, { sender: "user", message: newMessage }];
       newMessage = "";
 
@@ -66,8 +66,8 @@
         
         const res = await axios.post('http://localhost:8000/v1/graph/chat',
           {
-            graph_id:graphID,
-            user_message:newMessage
+            graph_id:graphId,
+            user_message:userMessage
           }
         );
 
