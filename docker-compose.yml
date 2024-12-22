@@ -9,7 +9,7 @@ services:
     #   - ai:/app
     networks:
       - app-network
-    depneds_on:
+    depends_on:
       - redis
 
   web:
