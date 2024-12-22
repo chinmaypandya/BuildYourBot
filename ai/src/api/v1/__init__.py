@@ -68,7 +68,7 @@ async def generate_response(request: Request, chat_request: ChatRequest):
         description=graph_data["description"]
     ).get_workflow()
     
-    state = graph.a_invoke({
+    state = graph.ainvoke({
         "messages": [HumanMessage(chat_request.user_message)]
     })
     
