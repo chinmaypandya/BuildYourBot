@@ -48,10 +48,20 @@ class SimpleAgent:
     # @cache
     async def node(self, state: State, config: RunnableConfig) -> dict:
         result = await self.__agent.ainvoke(state, config)
-        result.name = self.__name
+        sanitized_name = self.__sanitize_name(self.__name)
+        result.name = sanitized_name
+        print(result)
+        print("--------------------")
         return {
             "messages": [result]
         }
+        
+    def __sanitize_name(self, name: str) -> str:
+        # Ensure the name matches the pattern '^[a-zA-Z0-9_-]+$'
+        # You can apply a regex to sanitize the name
+        import re
+        sanitized_name = re.sub(r'[^a-zA-Z0-9_-]', '', name)
+        return sanitized_name
 
 # @cache
 def get_simple_agent(node: dict, llm) -> SimpleAgent:
