@@ -5,7 +5,7 @@ from langgraph.graph import END, StateGraph, START
 
 from src.buildyourbot.agents.simple import get_simple_agent
 from src.buildyourbot.state import State
-from src.buildyourbot.llms import get_google_llm
+from src.buildyourbot.llms import get_4o_mini
 
 class Graph:
     def __init__(self, graph_id: str, nodes: tuple, llm, name:str, description: str):
@@ -76,5 +76,5 @@ class Graph:
 
 # @cache
 def get_graph(graph_id: str, nodes: list[dict[str, any]], name, description):
-    llm = get_google_llm()
+    llm = get_4o_mini()
     return Graph(graph_id, nodes, llm, name, description)
