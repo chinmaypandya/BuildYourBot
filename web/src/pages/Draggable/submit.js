@@ -103,7 +103,7 @@ export const SubmitButton = () => {
     setLoading(true); // Start loading
 
     try {
-      const url = `${process.env.REACT_APP_CHAT_API_URL}/${graphResponse.graph_id}`;
+      const url = `${process.env.REACT_APP_CHAT_URI}/${graphResponse.graph_id}`;
       window.location.replace(url);
     } catch (error) {
       console.error("Error opening chat:", error);

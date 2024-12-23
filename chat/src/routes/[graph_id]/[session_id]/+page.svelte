@@ -9,6 +9,7 @@
 
   let chatHistory = [];
   let newMessage = "";
+  let loading = false; // State to track if the assistant is "thinking"
 
   const axiosInstance = axios.create({
     baseURL: '/api', 
@@ -62,15 +63,17 @@
 
       saveChatHistory();
 
+      loading = true; // Set loading to true while waiting for the AI response
+
       setTimeout(async () => {
         
         const res = await axios.post('http://localhost:8000/v1/graph/chat',
           {
-            graph_id:graphId,
-            user_message:userMessage
+            graph_id: graphId,
+            user_message: userMessage
           },
           {
-            headers:{
+            headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*'
             },
@@ -79,12 +82,13 @@
         );
 
         console.log(res);
-
         chatHistory = [...chatHistory, {
           sender: "assistant",
           message: res.data.content,
         }];
         saveChatHistory();
+
+        loading = false; // Set loading to false when the AI response is received
       }, 1000);
     }
   }
@@ -103,6 +107,17 @@
         </div>
       </div>
     {/each}
+
+    <!-- Show a "thinking" message with dots when loading -->
+    {#if loading}
+      <div class="message assistant">
+        <div class="message-bubble assistant-bubble">
+          <span class="dots">.</span>
+          <span class="dots">.</span>
+          <span class="dots">.</span>
+        </div>
+      </div>
+    {/if}
   </div>
 
   <div class="input-area">
