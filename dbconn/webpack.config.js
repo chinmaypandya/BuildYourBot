@@ -5,6 +5,7 @@ module.exports = {
   output: {
     filename: 'bundle.js', // Output bundle name
     path: path.resolve(__dirname, 'build'), // Output directory
+    clean: true,
   },
   devtool: 'source-map', // Enable source maps for better error tracing
   module: {
@@ -19,7 +20,7 @@ module.exports = {
                 syntax: 'typescript', // Parse TypeScript
                 tsx: false, // No React, so no need for TSX support
               },
-              target: 'es2020', // Target ECMAScript version
+              target: 'es2022', // Target ECMAScript version
               loose: false,
             },
             minify: true,

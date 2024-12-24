@@ -8,10 +8,10 @@ WORKDIR /app
 RUN npm i -g pnpm
 
 # Install dependencies (optimize cache by copying package files first)
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies (including dev dependencies)
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Move config files (optimize cache by moving config files first)
 COPY svelte.config.js eslint.config.js jsconfig.json tailwind.config.js vite.config.js .npmrc ./
