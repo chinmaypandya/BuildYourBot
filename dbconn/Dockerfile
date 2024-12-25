@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:22-alpine AS build
+FROM node:23-alpine3.21 AS build
 
 # Set working directory
 WORKDIR /app
@@ -20,19 +20,18 @@ COPY tsconfig.json webpack.config.js ./
 COPY . .
 
 # Compile typescript for type errors
-RUN pnpm run type-check
-
-# Build the TypeScript project
-RUN pnpm run build
+RUN pnpm run type-check && pnpm run build
 
 
-FROM node:22-alpine as production
+FROM node:23-alpine3.21 as production
 
 WORKDIR /app
 
 # Copy application code from build stage
-COPY --from=build /app/ ./
+COPY --from=build /app/build ./build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+ENTRYPOINT  [ "node", "build" ]

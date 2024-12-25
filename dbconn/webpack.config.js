@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './src/app.ts', // Your main TypeScript file
   output: {
-    filename: 'bundle.js', // Output bundle name
+    filename: 'index.js', // Output bundle name
     path: path.resolve(__dirname, 'build'), // Output directory
     clean: true,
   },
