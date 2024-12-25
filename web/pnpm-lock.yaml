@@ -20,15 +20,6 @@ importers:
       '@supabase/supabase-js':
         specifier: 2.45.4
         version: 2.45.4
-      '@testing-library/jest-dom':
-        specifier: 5.17.0
-        version: 5.17.0
-      '@testing-library/react':
-        specifier: 13.4.0
-        version: 13.4.0(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@testing-library/user-event':
-        specifier: 13.5.0
-        version: 13.5.0(@testing-library/dom@8.20.1)
       axios:
         specifier: 1.7.7
         version: 1.7.7
@@ -59,22 +50,31 @@ importers:
       react-router-dom:
         specifier: 6.26.2
         version: 6.26.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-scripts:
-        specifier: 5.0.1
-        version: 5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.0))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.0))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@18.3.1)(type-fest@0.21.3)(typescript@4.9.5)
       reactflow:
         specifier: 11.8.3
         version: 11.8.3(@types/react@18.3.18)(immer@9.0.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      web-vitals:
-        specifier: 2.1.4
-        version: 2.1.4
       zustand:
         specifier: 4.4.1
         version: 4.4.1(@types/react@18.3.18)(immer@9.0.21)(react@18.3.1)
     devDependencies:
+      '@testing-library/jest-dom':
+        specifier: 5.17.0
+        version: 5.17.0
+      '@testing-library/react':
+        specifier: 13.4.0
+        version: 13.4.0(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@testing-library/user-event':
+        specifier: 13.5.0
+        version: 13.5.0(@testing-library/dom@8.20.1)
+      react-scripts:
+        specifier: 5.0.1
+        version: 5.0.1(@babel/plugin-syntax-flow@7.26.0(@babel/core@7.26.0))(@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.0))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@18.3.1)(type-fest@0.21.3)(typescript@4.9.5)
       tailwindcss:
         specifier: ^3.4.13
         version: 3.4.17
+      web-vitals:
+        specifier: 2.1.4
+        version: 2.1.4
 
 packages:
 

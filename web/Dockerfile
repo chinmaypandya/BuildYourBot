@@ -14,13 +14,10 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # cpy rest of the code
-COPY tailwind.config.js .
-
-COPY public ./public
-COPY src ./src
+COPY tailwind.config.js public src ./
 
 # build the application
-RUN pnpm build
+RUN pnpm build && pnpm prune --prod && rm -rf /app/node_modules/.cache
 
 FROM node:23-alpine3.21 as production
 
