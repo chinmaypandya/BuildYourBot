@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:22-alpine AS build
+FROM node:23-alpine3.21 AS build
 
 # Set working directory
 WORKDIR /app
@@ -23,7 +23,7 @@ RUN pnpm run build && pnpm prune --prod && rm -rf /app/node_modules/.cache
 
 
 # Stage 2: Serve the application
-FROM node:22-alpine AS production
+FROM node:23-alpine3.21 AS production
 
 WORKDIR /app
 
