@@ -19,20 +19,19 @@ COPY svelte.config.js eslint.config.js jsconfig.json tailwind.config.js vite.con
 # Copy source files
 COPY . .
 
-# Build the project
-CMD ["pnpm", "run", "serve", "--host", "0.0.0.0"]
+RUN pnpm run build && pnpm prune --prod && rm -rf /app/node_modules/.cache
 
 
-# FROM node:22-alpine as production
+# Stage 2: Serve the application
+FROM node:22-alpine AS production
 
-# COPY --from=build /usr/local/bin /usr/local/bin
-# COPY --from=build /usr/local/lib /usr/local/lib
+WORKDIR /app
 
-# # Copy application code from build stage
-# COPY --from=build /app /app
+ENV NODE_ENV=production
 
-# EXPOSE 3000
+COPY --from=build /app/build ./build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
 
-# WORKDIR /app
-
-# CMD ["pnpm", "run", "start"]
+# Serve the project
+ENTRYPOINT [ "node", "build" ]
