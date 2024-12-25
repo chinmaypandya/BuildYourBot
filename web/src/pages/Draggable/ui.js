@@ -110,7 +110,7 @@ export const PipelineUI = () => {
   // Define connection line style based on the theme
   const connectionLineStyle = {
     stroke: theme === 'dark' ? '#fff' : '#000',
-    strokeWidth: 2,
+    strokeWidth: 3,
   };
 
   return (

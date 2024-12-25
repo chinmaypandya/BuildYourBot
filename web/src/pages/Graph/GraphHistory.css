@@ -1,122 +1,191 @@
-/* GraphHistory.css */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  #light {
-    background-color: #ccc;
-  }
-  #dark {
-    background-color: #181818;
-  }
+.graph-history {
+  padding: 30px;
+  font-family: 'Inter', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 1s ease-in-out;
+}
 
-  .graph-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    
-  }
-  #light .graph-container{
-    background-color: #e1e1e1;
-  }
-  #dark .graph-container{
-    background-color: #181818;
-    border: 1px solid #3ECF8E;
-  }
+.title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: slideDown 1s ease-in-out forwards;
+}
 
-  h1 {
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 30px;
-  }
+#light .title {
+  color: #333;
+}
+#dark .title {
+  color: #e0e0e0;
+}
 
-  .loading, .error {
-    text-align: center;
-    font-size: 50px;
-    padding: 20px;
-    border-radius: 8px;
-    color: rgb(251, 54, 54);
-    margin-bottom: 20px;
-  }
-  
-  #light .loading, .error{
-    color: #181818;
-  }
-  #dark .loading, .error{
-    color: #3ECF8E;
-  }
-  .graph-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .graph-item {
-    border-radius: 10px;
-    padding: 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-    text-align: left;
-    height: min-content;
-    margin-bottom: 10px;
-  }
-  #light .graph-item{
-    background-color: #f9f9f9;
-    border: 1px solid #262b34;
-  }
-  #dark .graph-item{
-    background-color: #2f2f30;
-    
-  }
-  .graph-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  .graph-link {
-    text-decoration: none;
-    color: inherit;
-  }
-  .graph-id-name{
-    display: flex;
-    justify-content: space-between;
-  }
-  
+.graph-table-container {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  animation: fadeIn 1s ease-in-out;
+}
 
-  #light .graph-link .graph-desc h2{
-    color: #504f4f;
-  }
-  #dark .graph-link .graph-desc h2{
-    color: #bbbbbb;
-  }
-  .graph-link h2 {
-    font-size: 15px;
-    /* margin: 10px 0; */
-  }
+.graph-table {
+  border-collapse: collapse;
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transform: scale(0.95);
+  transition: transform 0.3s ease-in-out;
+}
 
-  #light .graph-link h2{
-    color: #262b34;
-  }
-  #dark .graph-link h2{
-    color: #fff;
-  }
-  
-  h1 {
-    font-size: 30px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  #light h1{
-    color: #262b34;
-  }
-  #dark h1{
-    color: #cccccc;
-  }
+.graph-table:hover {
+  transform: scale(1);
+}
 
-  p {
-    margin: 0;
-    color: #cccccc;
-    font-size: 20px;
+#dark .graph-table {
+  border: 1px solid #21c55d;
+}
+
+.graph-table th,
+.graph-table td {
+  text-align: left;
+  padding: 15px 20px;
+  border: 1px solid #e2e6ea;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.graph-table th {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#light .graph-table th {
+  background-color: #262b34;
+  color: white;
+}
+
+#dark .graph-table th {
+  background-color: #333;
+  color: white;
+}
+
+#light .graph-table tbody tr {
+  background-color: #f7fafc;
+  color: #333;
+  opacity: 0;
+  animation: fadeInRow 0.8s ease-in-out forwards;
+}
+
+#dark .graph-table tbody tr {
+  background-color: #969697;
+  color: #000000;
+}
+
+#light .graph-table tbody tr:hover {
+  background-color: #e9f0f7;
+  color: #262b34;
+  cursor: pointer;
+}
+
+#dark .graph-table tbody tr:hover {
+  background-color: #2f2f30;
+  color: #e0e0e0;
+  cursor: pointer;
+}
+
+.view-details-btn {
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+  transform: scale(1);
+}
+
+#light .view-details-btn {
+  color: #69768e;
+}
+
+#dark .view-details-btn {
+  color: #333;
+}
+
+.view-details-btn:hover {
+  color: #21c55d;
+  transform: scale(1.1);
+}
+
+.loader-container,
+.error-container {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #21c55d;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite, pulse 2s infinite ease-in-out;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.no-graphs {
+  text-align: center;
+  color: #aaa;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 40px;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
