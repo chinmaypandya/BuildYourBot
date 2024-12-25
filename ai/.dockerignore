@@ -1,6 +1,5 @@
 # Node modules
 node_modules/
-tests/
 
 # Logs
 npm-debug.log
@@ -22,3 +21,9 @@ pnpm-debug.log
 build/
 dist/
 coverage/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
