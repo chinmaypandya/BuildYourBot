@@ -1,5 +1,5 @@
 # Build stage
-FROM node:22-alpine AS build
+FROM node:23-alpine3.21 AS build
 
 # Set current working directory
 WORKDIR /app
@@ -22,7 +22,7 @@ COPY src ./src
 # build the application
 RUN pnpm build
 
-FROM node:22-alpine as production
+FROM node:23-alpine3.21 as production
 
 WORKDIR /app
 
