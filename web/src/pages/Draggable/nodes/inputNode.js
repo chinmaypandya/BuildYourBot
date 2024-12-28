@@ -93,13 +93,13 @@ export const Node = ({ id, data }) => {
         type="target"
         position={Position.Left}
         id={`${id}-input`}
-        style={{ background: "#555" }}
+        style={{ background: "#555", width:'10px', height:'10px' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id={`${id}-output`}
-        style={{ background: "#555" }}
+        style={{ background: "#555", width:'10px', height:'10px' }}
       />
     </>
   );

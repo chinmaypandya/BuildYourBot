@@ -2,29 +2,25 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './GraphHistory.css';
+import Sidebar from '../../components/ui/Sidebar';
 
 const GraphHistory = ({ userId }) => {
-  // State to hold graph data, loading status, and error messages
-  const [graphData, setGraphData] = useState({ graphIds: [] });
+  const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // API endpoint to fetch graphs for a specific user
   const API_URL = `${process.env.REACT_APP_DB_URI}/api/graph/user/${userId}`;
   const ERROR_MESSAGES = {
-    network: 'Network response was not ok',
+    network: 'Something went wrong. Please try again later.',
   };
 
-  // useEffect to fetch graph data when the component mounts or when userId changes
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
         setLoading(true);
-        // Make API call to fetch graph data
         const response = await axios.get(API_URL);
-        setGraphData(response.data);
+        setGraphData(response.data.graphIds); 
       } catch (err) {
-        // Handle errors, setting error state if one occurs
         setError(err.response?.data?.message || ERROR_MESSAGES.network);
       } finally {
         setLoading(false);
@@ -32,42 +28,62 @@ const GraphHistory = ({ userId }) => {
     };
 
     fetchGraphData();
-  }, [userId, API_URL, ERROR_MESSAGES.network]); // Dependencies for the effect
+  }, [userId, API_URL]);
 
-  // Render loading state
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loader-container">
+        <div className="spinner"></div>
+        <p>Loading your graphs...</p>
+      </div>
+    );
   }
 
-  // Render error state if an error occurred
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return (
+      <div className="error-container">
+        <h2>Error</h2>
+        <p>{error}</p>
+      </div>
+    );
   }
 
-  // Main rendering of graph data
   return (
-    <div className="graph-container">
-      <h1>Graphs for User: {userId}</h1>
-      {graphData.graphIds.length > 0 ? (
-        <ul className="graph-list">
-          {graphData.graphIds.map(({ id, name, description }) => (
-            <li key={id} className="graph-item">
-              <Link to={`/graph/${id}`} className="graph-link">
-                <div className="graph-id-name">
-                  <h2>Graph Id: {id}</h2>
-                  <h2>Name: {name}</h2>
-                </div>
-                <div className="graph-desc">
-                  <h2>Description: {description}</h2>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <>
+    <Sidebar />
+    
+    <div className="graph-history">
+      <h1 className="title">Your Saved Graphs</h1>
+      {graphData.length > 0 ? (
+        <div className="graph-table-container">
+          <table className="graph-table">
+            <thead>
+              <tr>
+                <th>Graph Name</th>
+                <th>Description</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {graphData.map(({ id, name, description }) => (
+                <tr key={id}>
+                  <td>{name}</td>
+                  <td>{description}</td>
+                  <td>
+                    <Link to={`/graph/${id}`} className="view-details-btn">
+                      View Details
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        <p>No graph data available.</p>
+        <p className="no-graphs">No graphs available. Start creating one!</p>
       )}
     </div>
+    </>
   );
 };
 

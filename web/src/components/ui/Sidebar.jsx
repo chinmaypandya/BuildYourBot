@@ -50,7 +50,7 @@ const Sidebar = () => {
     >
       <div className="top-section">
         {/* Sidebar items */}
-        <div className="sidebar-item" onClick={() => navigate("/")}>
+        <div className="sidebar-item" onClick={() => navigate("/success")}>
           <IoHomeOutline />
           {isHovered && <span>Home</span>}
         </div>
