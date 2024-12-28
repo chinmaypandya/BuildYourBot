@@ -5,22 +5,15 @@ FROM node:23-alpine3.21 AS build
 WORKDIR /app
 
 # Install dependencies (optimize cache by copying package files first)
-COPY package.json package-lock.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install TypeScript globally
-RUN npm i -g pnpm
+RUN npm i -g pnpm@9.9.0 && pnpm i --frozen-lockfile
 
-# Install dependencies (including dev dependencies)
-RUN pnpm install --frozen-lockfile
-
-# Move config files (optimize cache by moving config files first)
-COPY tsconfig.json webpack.config.js ./
-
-# Copy source files and tsconfig.json
 COPY . .
 
-# Compile typescript for type errors
-RUN pnpm run type-check && pnpm run build
+# # Compile typescript for type errors
+RUN npx tsc --project tsconfig.json &&  pnpm run build
 
 
 FROM node:23-alpine3.21 as production
@@ -31,7 +24,8 @@ WORKDIR /app
 COPY --from=build /app/build ./build
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/.env ./.env
 
 EXPOSE 3000
 
-ENTRYPOINT  [ "node", "build" ]
+ENTRYPOINT  [ "npm", "run", "start" ]

@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/app.ts', // Your main TypeScript file
+  entry: './dist/app.js', // Your main TypeScript file
   output: {
     filename: 'index.js', // Output bundle name
     path: path.resolve(__dirname, 'build'), // Output directory

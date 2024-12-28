@@ -6,7 +6,7 @@
     "type-check": "npx tsc --noEmit",
     "build": "npx webpack --mode production",
     "dev:webpack": "npx webpack --mode development",
-    "start": "node --enable-source-maps --trace-warnings build/bundle.js",
+    "start": "node --enable-source-maps --trace-warnings build/index.js",
     "dev": "npx ts-node-dev --respawn src/app.ts",
     "watch": "npx webpack --watch"
   },

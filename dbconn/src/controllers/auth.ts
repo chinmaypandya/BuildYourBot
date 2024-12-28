@@ -1,17 +1,20 @@
 // controllers/authController.ts
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+
 import { v4 as uuidv4 } from 'uuid';
 
-dotenv.config();
+
 
 // Initialize Supabase client
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL as string;
-const supabaseKey = process.env.REACT_APP_SUPABASE_API as string;
+const supabaseUrl = process.env.SUPABASE_URL as string;
+const supabaseKey = process.env.SUPABASE_API as string;
 const JWT_SECRET = process.env.JWT_SECRET as string;
+// console.log(supabaseUrl, supabaseKey)
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Define interfaces for request bodies
