@@ -13,8 +13,10 @@ COPY package.json pnpm-lock.yaml ./
 # install project dependencies using pnpm
 RUN pnpm install --frozen-lockfile
 
-# cpy rest of the code
-COPY tailwind.config.js public src ./
+# Copy required files and folders
+COPY tailwind.config.js ./ 
+COPY public ./public
+COPY src ./src
 
 # build the application
 RUN pnpm build && pnpm prune --prod && rm -rf /app/node_modules/.cache
