@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Login.css";
 
-const Login = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+const Register = () => {
+  const [formData, setFormData] = useState({ email: "", password: "", username: "" });
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleError = (err) => {
@@ -21,22 +20,31 @@ const Login = () => {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_DB_URI}/api/auth/login`,
-        credentials,
+        `${process.env.REACT_APP_DB_URI}/api/auth/register`,
+        formData,
         { withCredentials: true }
       );
-      if (data) navigate("/success");
+      if (data) {
+        setShowConfirmation(true);
+        setTimeout(() => setShowConfirmation(false), 5000);
+      }
     } catch (err) {
       handleError(err);
     }
   };
 
-
   return (
     <div className="main">
       <div className="container">
-        <div className="heading">Sign In</div>
+        <div className="heading">Register</div>
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+        
+        {showConfirmation && (
+          <div className="confirmation-popup">
+            <p>A confirmation email has been sent. Please check your inbox.</p>
+          </div>
+        )}
+
         <form className="form" onSubmit={handleSubmit}>
           <input
             required
@@ -44,7 +52,16 @@ const Login = () => {
             type="email"
             name="email"
             placeholder="E-mail"
-            value={credentials.email}
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <input
+            required
+            className="input"
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
             onChange={handleChange}
           />
           <input
@@ -53,17 +70,17 @@ const Login = () => {
             type="password"
             name="password"
             placeholder="Password"
-            value={credentials.password}
+            value={formData.password}
             onChange={handleChange}
           />
-          <input className="register-login-button" type="submit" value="Sign In" />
+          <input className="register-login-button" type="submit" value="Register" />
         </form>
         <div className="register-login-link">
-        <p>Create new account <a href="/register">Register</a></p>
+          <p>Already have an account? <a href="/">Login here</a></p>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

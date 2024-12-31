@@ -2,7 +2,9 @@ import { Request, Response } from 'express';
 import { Graph, alg } from 'graphlib';
 import {pool} from '../pool'; // Ensure this points to your pool setup
 import { v4 as uuidv4 } from 'uuid';
-
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 // Interfaces for node and pipeline data structures
 interface NodeData {
     id: string;
@@ -20,7 +22,7 @@ interface PipelineData {
     description: string; 
     userId: string;
 }
-
+const JWT_SECRET = process.env.JWT_SECRET as string;
 // SQL Queries
 const INSERT_GRAPH_QUERY = `
     INSERT INTO graphs (id, user_id, name, description)
@@ -178,7 +180,14 @@ export const getAllGraphs = async (req: Request, res: Response): Promise<void> =
         const result = await pool.query(SELECT_GRAPHS_QUERY, [userId]);
 
         if (result.rows.length > 0) {
-            res.json({ userId, graphIds: result.rows });
+            const Ids = result.rows.map((graph: any) => graph.id);
+            const tokenPayload = {
+                userId,
+                graphIds: Ids
+            };
+            const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '1d' });
+            res.cookie('graph_token', token);
+            res.json({ token,userId, graphIds: result.rows});
         } else {
             res.status(404).json({ error: 'No graphs found for the provided user ID' });
         }

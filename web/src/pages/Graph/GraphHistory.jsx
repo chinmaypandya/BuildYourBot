@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './GraphHistory.css';
 import Sidebar from '../../components/ui/Sidebar';
-
 const GraphHistory = ({ userId }) => {
   const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,17 +17,30 @@ const GraphHistory = ({ userId }) => {
     const fetchGraphData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(API_URL);
+
+        console.log("Fetching data from:", API_URL);
+        const response = await axios.get(API_URL, {
+          withCredentials: true, 
+        });
+  
+        // Validate and set data
+        if (!Array.isArray(response.data.graphIds)) {
+          throw new Error("Invalid graph data format");
+        }
+  
         setGraphData(response.data.graphIds); 
+        setError(null); 
       } catch (err) {
-        setError(err.response?.data?.message || ERROR_MESSAGES.network);
+        console.error("Error fetching data:", err.response || err.message);
+        setError(err.response?.data?.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchGraphData();
   }, [userId, API_URL]);
+  
 
   if (loading) {
     return (
@@ -62,6 +74,7 @@ const GraphHistory = ({ userId }) => {
                 <th>Graph Name</th>
                 <th>Description</th>
                 <th>Action</th>
+                <th>Chat</th>
               </tr>
             </thead>
             <tbody>
@@ -70,10 +83,15 @@ const GraphHistory = ({ userId }) => {
                   <td>{name}</td>
                   <td>{description}</td>
                   <td>
-                    <Link to={`/graph/${id}`} className="view-details-btn">
+                    <Link to={`/graph/${id}`}>
                       View Details
                     </Link>
                   </td>
+                  <td>
+                      <a href={`http://localhost:5173/${id}`} target="_blank" rel="noopener noreferrer" className="chat-btn">
+                        Chat
+                      </a>
+                    </td>
                 </tr>
               ))}
             </tbody>

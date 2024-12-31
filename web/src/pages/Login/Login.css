@@ -58,19 +58,8 @@ body {
   border: 2px solid #71c8a1;
 }
 
-.register {
-  display: block;
-  margin-top: 10px;
-  margin-left: 10px;
-}
 
-.register a {
-  font-size: 11px;
-  color: #3ecf8e;
-  text-decoration: none;
-}
-
-.login-button {
+.register-login-button {
   display: block;
   width: 100%;
   font-weight: bold;
@@ -83,47 +72,76 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.login-button:hover {
+.register-login-button:hover {
   transform: scale(1.03);
 }
 
-.login-button:active {
+.register-login-button:active {
   transform: scale(0.95);
 }
 
-.social-account-container {
-  margin-top: 25px;
+@keyframes slideInAndOut {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  90% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
-.title {
-  display: block;
+.confirmation-popup {
+  position: fixed;
+  top: 10px;
+  right: 0;
+  background: #3ecf8e;
+  color: #181818;
+  font-weight: bold;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  animation: slideInAndOut 5s ease-in-out;
+  z-index: 1000;
+  font-family: 'Inter',sans-serif;
+}
+
+.confirmation-popup p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.register-login-link {
   text-align: center;
-  font-size: 10px;
-  color: rgb(170, 170, 170);
+  margin-top: 20px;
 }
 
-.social-accounts {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 5px;
+.register-login-link a {
+  font-size: 14px;
+  color: #3ecf8e;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 5px 10px;
+  border: 2px solid #3ecf8e;
+  border-radius: 25px;
+  transition: all 0.3s ease;
 }
 
-.social-button {
-  background: linear-gradient(45deg, rgb(0, 0, 0) 0%, rgb(112, 112, 112) 100%);
-  border: 5px solid white;
-  padding: 5px;
-  border-radius: 50%;
-  width: 40px;
-  aspect-ratio: 1;
-  display: grid;
-  place-content: center;
-  box-shadow: rgba(133, 189, 215, 0.8784313725) 0px 12px 10px -8px;
-  transition: all 0.2s ease-in-out;
+.register-login-link a:hover {
+  background-color: #3ecf8e;
+  color: #181818;
+  box-shadow: 0px 5px 15px rgba(62, 207, 142, 0.6);
 }
 
-.social-button:hover {
-  transform: scale(1.2);
+.register-login-link a:active {
+  transform: scale(0.98);
 }
 
