@@ -1,16 +1,19 @@
+<script>
+
+import { onMount } from 'svelte';
+import { goto } from '$app/navigation';
+import { parseCookies } from '$lib'; 
+
+  onMount(() => {
+    const cookies = parseCookies();
+    const accessToken = cookies.access_token ? cookies.access_token : null;
+    if (!accessToken) {
+      goto('/login');
+    }
+  });
+</script>
+
 <style>
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background-color: #1e1e2f;
-    color: white;
-    font-family: 'Inter', sans-serif;
-    height: 100vh;
-    margin: 0;
-}
 
 h1 {
     font-size: 2rem;

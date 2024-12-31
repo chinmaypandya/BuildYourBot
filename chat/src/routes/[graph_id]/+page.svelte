@@ -5,19 +5,12 @@
   import { onMount } from 'svelte';
   import './page_styles.css';
   import { sessions, loadSessions, PageReload, createSession } from '$lib/session';
+	import { parseCookies } from '$lib';
 
   let isAuthorized = true;
   const graphId = $page.params.graph_id;
   let newSessionName = '';
 
-  function parseCookies() {
-    const cookies = document.cookie.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=');
-      acc[key] = decodeURIComponent(value);
-      return acc;
-    }, {});
-    return cookies;
-  }
 
   // Decode JWT to extract payload
   function decodeJWT(token) {
