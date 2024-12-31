@@ -20,7 +20,7 @@ const Graph = ({ graphId }) => {
   }));
 
   const GRAPH_API_URL = `http://localhost:3002/api/graph/${graphId}`;
-  const CREATE_GRAPH_API_URL = 'http://localhost:8000/v1/chat/graph/create';
+  const CREATE_GRAPH_API_URL = 'http://localhost:8000/v1/graph/create';
 
   const fetchGraphData = useCallback(async () => {
     try {

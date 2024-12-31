@@ -25,7 +25,7 @@ const Login = () => {
         credentials,
         { withCredentials: true }
       );
-      if (data) navigate("/success");
+      if (data) navigate("/");
     } catch (err) {
       handleError(err);
     }
@@ -56,7 +56,7 @@ const Login = () => {
             value={credentials.password}
             onChange={handleChange}
           />
-          <input className="register-login-button" type="submit" value="Sign In" />
+          <input className="register-login-button" type="submit" value="Sign In" onClick={handleSubmit}/>
         </form>
         <div className="register-login-link">
         <p>Create new account <a href="/register">Register</a></p>

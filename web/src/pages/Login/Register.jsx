@@ -76,7 +76,7 @@ const Register = () => {
           <input className="register-login-button" type="submit" value="Register" />
         </form>
         <div className="register-login-link">
-          <p>Already have an account? <a href="/">Login here</a></p>
+          <p>Already have an account? <a href="/login">Login here</a></p>
         </div>
       </div>
     </div>

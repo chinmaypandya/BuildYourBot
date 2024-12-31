@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './GraphHistory.css';
-import Sidebar from '../../components/ui/Sidebar';
+import GraphSidebar from '../../components/ui/GraphSidebar';
 const GraphHistory = ({ userId }) => {
   const [graphData, setGraphData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const GraphHistory = ({ userId }) => {
       try {
         setLoading(true);
 
-        console.log("Fetching data from:", API_URL);
+        // console.log("Fetching data from:", API_URL);
         const response = await axios.get(API_URL, {
           withCredentials: true, 
         });
@@ -39,7 +39,7 @@ const GraphHistory = ({ userId }) => {
     };
   
     fetchGraphData();
-  }, [userId, API_URL]);
+  }, [userId]);
   
 
   if (loading) {
@@ -62,7 +62,7 @@ const GraphHistory = ({ userId }) => {
 
   return (
     <>
-    <Sidebar />
+    <GraphSidebar />
     
     <div className="graph-history">
       <h1 className="title">Your Saved Graphs</h1>

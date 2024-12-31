@@ -28,7 +28,7 @@ const GraphSidebar = () => {
       if (response.status === 200) {
         Cookies.remove('access_token'); // Remove the access token cookie
         Cookies.remove('session_token'); // Remove the session token cookie
-        navigate("/"); // Redirect to home or login page
+        navigate("/login"); // Redirect to home or login page
       }
     } catch (error) {
       console.error("Error signing out:", error.response?.data?.error || error.message); // Log error
@@ -44,7 +44,7 @@ const GraphSidebar = () => {
     >
       <div className="top-section">
         {/* Sidebar items */}
-        <div className="sidebar-item" onClick={() => navigate("/success")}>
+        <div className="sidebar-item" onClick={() => navigate("/")}>
           <IoHomeOutline />
           {isHovered && <span>Home</span>}
         </div>

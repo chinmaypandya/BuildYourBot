@@ -8,12 +8,12 @@ import { useStore } from './pages/Draggable/store';
 import { PipelineToolbar } from "./pages/Draggable/toolbar";
 import { PipelineUI } from "./pages/Draggable/ui";
 import { SubmitButton } from "./pages/Draggable/submit";
-import Sidebar from "./components/ui/Sidebar";
 import Login from "./pages/Login/Login";
 import Graph from "./pages/Graph/Graph";
 import GraphHistory from "./pages/Graph/GraphHistory";
 import "./App.css";
 import Register from './pages/Login/Register';
+import GraphSidebar from './components/ui/GraphSidebar';
 
 // Route constants
 const ROUTES = {
@@ -21,7 +21,7 @@ const ROUTES = {
   REGISTER: "/register",
   GRAPH: "/graph/:graphId",
   GRAPHS: "/graphs",
-  SUCCESS: "/success",
+  LOGIN:"/login"
 };
 
 const isAuthenticated = () => {
@@ -80,7 +80,7 @@ const SuccessPage = () => {
 
   return (
     <div id={theme}>
-      <Sidebar />
+      <GraphSidebar />
       <button onClick={toggleTheme} className="theme-toggle-btn">
         {theme === "light" ? "Dark Theme" : "Light Theme"}
       </button>
@@ -95,18 +95,18 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path={ROUTES.HOME} element={<Login />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
         <Route path={ROUTES.REGISTER} element={<Register />} />
         <Route path={ROUTES.GRAPH} element={<GraphPage />} />
         <Route path={ROUTES.GRAPHS} element={<GraphIDPage />} />
         
         <Route
-          path={ROUTES.SUCCESS}
+          path={ROUTES.HOME}
           element={
             isAuthenticated() ? (
               <SuccessPage />
             ) : (
-              <Navigate to={ROUTES.HOME} replace /> )
+              <Navigate to={ROUTES.LOGIN} replace /> )
           }
         />
       </Routes>
