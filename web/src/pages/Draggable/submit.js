@@ -1,23 +1,40 @@
 import axios from "axios";
 import { useState } from "react";
 import { useStore } from "./store";
-import "./SubmitButton.css"; 
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import "./SubmitButton.css";
 
 export const SubmitButton = () => {
   const [response, setResponse] = useState(null);
   const { nodes, edges } = useStore();
   const [graphResponse, setGraphResponse] = useState(null);
   const [imageData, setImageData] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
+
+  const getUserIdFromToken = () => {
+    const sessionToken = Cookies.get("session_token");
+    if (sessionToken) {
+      try {
+        const decoded = jwtDecode(sessionToken);
+        return decoded.userId;
+      } catch (error) {
+        console.error("Failed to decode token:", error);
+        return null;
+      }
+    }
+    return null;
+  };
 
   // Handle submitting the pipeline
   const handleSubmit = async () => {
+    const userId = getUserIdFromToken();
     if (!nodes || !edges) {
       console.error("Nodes or edges are undefined!");
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       const payload = {
@@ -39,7 +56,7 @@ export const SubmitButton = () => {
         })),
         name: "test-graph",
         description: "Testing",
-        userId: "1abfbb49-f964-42ed-a5a7-6acbcde61387",
+        userId: userId,
       };
 
       const result = await axios.post(
@@ -53,7 +70,7 @@ export const SubmitButton = () => {
       console.error("Error submitting the pipeline:", error);
       alert("Failed to submit the pipeline. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -64,7 +81,7 @@ export const SubmitButton = () => {
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       const payload = {
@@ -90,7 +107,7 @@ export const SubmitButton = () => {
       console.error("Error creating the graph:", error);
       alert("Failed to create the graph. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -100,7 +117,7 @@ export const SubmitButton = () => {
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     try {
       const url = `${process.env.REACT_APP_CHAT_URI}/${graphResponse.graph_id}`;
@@ -109,20 +126,30 @@ export const SubmitButton = () => {
       console.error("Error opening chat:", error);
       alert("Failed to open chat. Please try again.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   // Reusable button component
-  const Button = ({ onClick, label, backgroundColor, hoverColor, disabled }) => (
+  const Button = ({
+    onClick,
+    label,
+    backgroundColor,
+    hoverColor,
+    disabled,
+  }) => (
     <button
       type="button"
       onClick={onClick}
       className="custom-button"
       style={{ backgroundColor }}
       disabled={disabled} // Disable button when loading
-      onMouseEnter={(e) => !disabled && (e.target.style.backgroundColor = hoverColor)}
-      onMouseLeave={(e) => !disabled && (e.target.style.backgroundColor = backgroundColor)}
+      onMouseEnter={(e) =>
+        !disabled && (e.target.style.backgroundColor = hoverColor)
+      }
+      onMouseLeave={(e) =>
+        !disabled && (e.target.style.backgroundColor = backgroundColor)
+      }
     >
       {label}
     </button>
@@ -157,7 +184,7 @@ export const SubmitButton = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            flexDirection: 'column'
+            flexDirection: "column",
           }}
         >
           <img

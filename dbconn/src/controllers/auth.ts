@@ -6,7 +6,6 @@ import { Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import jwt from 'jsonwebtoken';
 
-import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -56,7 +55,6 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
     res.status(401).json({ error: error?.message || 'Invalid credentials' });
     return;
   }
-
   const token = data.session.access_token;
 
   // Check if the user exists in the database
@@ -68,7 +66,7 @@ export const login = async (req: Request<{}, {}, LoginRequestBody>, res: Respons
 
   // If the user does not exist, create a new user record
   if (!userData) {
-    const newUserId = uuidv4();
+    const newUserId = data.user.id;
     const { error: insertError } = await supabase
       .from('users')
       .insert({
@@ -133,7 +131,7 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
     return;
   }
 
-  const newUserId = uuidv4();
+  const newUserId = data.user.id;
 
   // Insert the new user into the database
   const { error: insertError } = await supabase
@@ -154,7 +152,7 @@ export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: R
   }
 
   // Create a session token
-  const sessionToken = jwt.sign({ userId: data.user.id } as TokenPayload, JWT_SECRET, { expiresIn: '1d' });
+  const sessionToken = jwt.sign({ userId: newUserId } as TokenPayload, JWT_SECRET, { expiresIn: '1d' });
 
   // Set session token cookie
   res.cookie('session_token', sessionToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
@@ -179,6 +177,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
   // Clear cookies
   res.clearCookie('access_token');
   res.clearCookie('session_token');
+  res.clearCookie('graph_token');
 
   res.status(200).json({ message: 'Logged out successfully' });
 };
