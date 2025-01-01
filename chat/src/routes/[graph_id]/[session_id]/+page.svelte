@@ -3,7 +3,7 @@
   import { onMount } from 'svelte';
   import axios from 'axios'; 
   import './page_styles.css';
-	import { checkUserGraphs, parseCookies } from '$lib';
+	import { checkUserGraphs } from '$lib';
 	import { goto } from '$app/navigation';
 
   const graphId = $page.params.graph_id;
@@ -52,16 +52,20 @@
     }
   }
 
-  onMount(() => {
-    loadChatHistory();
-    const cookies = parseCookies();
-    const { isAuthorized, redirectTo } = checkUserGraphs(cookies, graphId);
+  onMount(async () => {
+		try {
+			const { isAuthorized, redirectTo } = await checkUserGraphs(graphId);
+			if (!isAuthorized) {
+				goto(redirectTo);
+				return;
+			}
 
-    if (!isAuthorized) {
-      goto(redirectTo);
-      return;
-    }
-  });
+			await loadChatHistory();
+		} catch (error) {
+			console.error('Error in checkUserGraphs:', error);
+			goto('/error');
+		}
+	});
 
   function sendMessage() {
     if (newMessage.trim()) {

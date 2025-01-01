@@ -6,6 +6,7 @@ import {
   checkSession,
   google,
   register,
+  verifyTokenMiddleware,
 } from '../controllers/auth';
 
 const router = express.Router();
@@ -44,5 +45,7 @@ router.post('/logout', logout);
  * @access Private
  */
 router.get('/session', checkSession);
+
+router.post('/verify-token', verifyTokenMiddleware);
 
 export default router;
