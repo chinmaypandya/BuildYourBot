@@ -3,10 +3,11 @@
   import { onMount } from 'svelte';
   import axios from 'axios'; 
   import './page_styles.css';
+	import { checkUserGraphs, parseCookies } from '$lib';
+	import { goto } from '$app/navigation';
 
   const graphId = $page.params.graph_id;
   const sessionId = $page.params.session_id;
-
   let chatHistory = [];
   let newMessage = "";
   let loading = false; // State to track if the assistant is "thinking"
@@ -53,6 +54,13 @@
 
   onMount(() => {
     loadChatHistory();
+    const cookies = parseCookies();
+    const { isAuthorized, redirectTo } = checkUserGraphs(cookies, graphId);
+
+    if (!isAuthorized) {
+      goto(redirectTo);
+      return;
+    }
   });
 
   function sendMessage() {

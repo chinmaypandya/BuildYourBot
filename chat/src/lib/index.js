@@ -24,3 +24,22 @@ export function decodeJWT(token) {
       return null;
     }
   }
+
+export function checkUserGraphs(cookies, graphId) {
+    const graphToken = cookies.graph_token ? decodeJWT(cookies.graph_token) : null;
+    const sessionToken = cookies.session_token ? decodeJWT(cookies.session_token) : null;
+  
+    if (!graphToken || !sessionToken) {
+      return { isAuthorized: false, redirectTo: '/error' };
+    }
+  
+    const { userId: graphUserId, graphIds } = graphToken;
+    const { userId: sessionUserId } = sessionToken;
+  
+    if (graphUserId !== sessionUserId || !graphIds.includes(graphId)) {
+      return { isAuthorized: false, redirectTo: '/error' };
+    }
+  
+    return { isAuthorized: true };
+  }
+  

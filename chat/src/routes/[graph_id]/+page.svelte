@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   import './page_styles.css';
   import { sessions, loadSessions, PageReload, createSession } from '$lib/session';
-	import { parseCookies , decodeJWT} from '$lib';
+	import { parseCookies , decodeJWT, checkUserGraphs} from '$lib';
 
   let isAuthorized = true;
   const graphId = $page.params.graph_id;
@@ -14,21 +14,10 @@
   // Validate user access based on cookies
   onMount(() => {
     const cookies = parseCookies();
-    const graphToken = cookies.graph_token ? decodeJWT(cookies.graph_token) : null;
-    const sessionToken = cookies.session_token ? decodeJWT(cookies.session_token) : null;
+    const { isAuthorized, redirectTo } = checkUserGraphs(cookies, graphId);
 
-    if (!graphToken || !sessionToken) {
-      isAuthorized = false;
-      goto('/error'); 
-      return;
-    }
-
-    const { userId: graphUserId, graphIds } = graphToken;
-    const { userId: sessionUserId } = sessionToken;
-
-    if (graphUserId !== sessionUserId || !graphIds.includes(graphId)) {
-      isAuthorized = false;
-      goto('/error'); // Navigate to error page
+    if (!isAuthorized) {
+      goto(redirectTo);
       return;
     }
 
